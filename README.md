@@ -2,36 +2,36 @@
 
 Base del proyecto para dar desarrollo a estrategias más elaboradas.
 
+---
+
 ## Instalación
 
 Guía de Configuración del Entorno con UV y VSCode
 
-## Requisitos Previos
-- Visual Studio Code instalado
-- Python 3.11.9
-- Terminal PowerShell
+### ⚙️ Instalación - Configuración Express con UV + VSCode
 
-## Pasos de Configuración
+#### 📋 **Requisitos Mínimos**
+- ![PowerShell](https://img.shields.io/badge/-PowerShell-blue?style=flat-square) Terminal PowerShell (¡nada de CMD!)
+- ![VSCode](https://img.shields.io/badge/-VSCode-007ACC?logo=visualstudiocode&style=flat-square) Visual Studio Code instalado
+- ![Python](https://img.shields.io/badge/-Python%203.11.9-3776AB?logo=python&style=flat-square) Versión exacta: 3.11.9
 
-### 1. Configuración del Entorno Virtual
-1. Abrir el proyecto en Visual Studio Code
-2. Presionar `Ctrl + Shift + P` para abrir la paleta de comandos
-3. Buscar y seleccionar `Python: Create Environment`
-4. Elegir la opción `Venv`
-5. Seleccionar `Python 3.11.9 64-bit (Microsoft Store)`
-6. Esperar a que se complete la creación del entorno
+---
 
-### 2. Preparación del Entorno
-1. Reiniciar Visual Studio Code para asegurar que reconozca el nuevo entorno
-2. Abrir una nueva terminal PowerShell desde VSCode
-3. Verificar que el entorno virtual esté activado (puede ser con `py --version`) - debería verse el prefijo `(.venv)` en la terminal
-4. Si no está activado, ejecutar:
-   ```powershell
-   .\.venv\Scripts\activate
-   ```
+#### 🚀 **Configuración**
 
-### 3. Instalación de Dependencias con UV
-1. Con el entorno virtual activado, ejecutar:
+1. **🔥 Crear Entorno Virtual**  
+   - Abre VSCode y presiona `Ctrl + Shift + P`
+   - Busca y selecciona:  
+     `Python: Create Environment` → `Venv` → `Python 3.11.9 64-bit` y si es el de la `(Microsoft Store)` mejor.
+   - ![Wait](https://img.shields.io/badge/-ESPERA_5_segundos-important) Hasta que aparezca la carpeta `.venv`.
+
+2. **🔄 Reinicio**
+   - Cierra y vuelve a abrir VSCode (obligado ✨).
+   - Verifica que en la terminal veas `(.venv)` al principio  
+     *(Si no: ejecuta `.\.venv\Scripts\activate` manualmente)*
+
+3. **💣 Instalación con UV**  
+   En la terminal PowerShell (.venv activado):  
    ```powershell
    python -m uv pip install -e .
    ```
@@ -40,18 +40,18 @@ Guía de Configuración del Entorno con UV y VSCode
    - Instala el proyecto en modo desarrollo (-e)
    - Crea una carpeta `proyecto_2025a.egg-info` con metadatos del proyecto.
 
-## Verificación
+### Verificación
 - La instalación es exitosa si:
   - No hay mensajes de error en la terminal.
   - Se crea la carpeta `proyecto_2025a.egg-info`.
   - Puedes importar las dependencias instaladas desde Python.
 
-## Notas Importantes
+### Notas Importantes
 - Siempre usar PowerShell como terminal predeterminada para consistencia.
 - El entorno virtual debe estar activado antes de instalar dependencias.
 - La carpeta `proyecto_2025a.egg-info` es normal y necesaria - se puede agregar a `.gitignore`.
 
-## Ejecución del programa
+### Ejecución del programa
 
 Abres una terminal, escribes `py e` tabulas y das enter, así de simple! Alternativamente escribiendo en terminal `python .\exec.py` deberás ejecutar una muestra del aplicativo para una Red de 04 nodos, generarando un análisis completo sobre la misma, de tal forma que se obtendrán dos artefactos tras la ejecución
 
@@ -75,7 +75,7 @@ def start_up():
     estado_inicio = "1000"
     sys_config = Manager(estado_inicial=estado_inicio)
 
-    ### Ejemplo de solución mediante fuerza bruta ###
+    ## Ejemplo de solución mediante fuerza bruta ##
 
     bf_analyzer = BruteForce(sys_config)
     bf_analyzer.analizar_completamente_una_red()
@@ -90,6 +90,36 @@ Primeramente se cuenta con un decorador `@profile` encontrado en `src.middleware
 Secundariamente sobre el directorio `logs`, cada que se use el objeto `self.logger` en la clase de ejecución se generará un archivo indicando los datos logeados/impresos para hacer un seguimiento completo de la ejecución, este se almacena por carpetas de la forma `dia_mes_año\hora\metodo_del_log` manteniendo un historial de las ejecuciones. Este logger se volverá casual/sospechosamente útil cuando el rastro de las ejecuciones sea _extremandamente_ extenso para algún proceso.
 
 
-## Pruebas
+### Pruebas
 
 En el archivo de pruebas en el directorio `.tests` encontrarás el documento excel con las pruebas a resolver mediante uso del aplicativo.
+
+
+```py
+
+def start_up():
+    """Punto de entrada principal"""
+    #                ABCDEFGHIJ...
+    estado_inicio = "1000"
+    condiciones__ = "1110"
+    alcance______ = "1110"
+    mechanismo___ = "1110"
+
+    sys_config = Manager(estado_inicial=estado_inicio)
+    ### Ejemplo de solución mediante módulo de pyphi ###
+
+    # pyphi_analyzer = Phi(sys_config)
+    # sia_uno = pyphi_analyzer.run(condiciones__, alcance______, mechanismo___)
+    # print(sia_uno)
+
+    ### Ejemplo de solución mediante fuerza bruta ###
+
+    bf_analyzer = BruteForce(sys_config)
+    # sia_dos = bf_analyzer.run(condiciones__, alcance______, mechanismo___)
+    # print(sia_dos)
+    bf_analyzer.analizar_completamente_una_red()
+
+    # q_analyzer = QNodes(sys_config)
+    # sia_tres = q_analyzer.run(condiciones__, alcance______, mechanismo___)
+    # print(sia_tres)
+```
