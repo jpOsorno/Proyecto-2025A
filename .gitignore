@@ -169,3 +169,24 @@ cython_debug/
 
 # PyPI configuration file
 .pypirc
+
+# Archive files
+.archive
+.archive/
+.archive/**
+**/.archive
+results
+
+# Profiling
+review
+review/*
+*/review
+
+# Logging
+.logs
+.logs/*
+*/.logs
+
+# pyphi
+__pyphi_cache__
+__pyphi_cache__/**
