@@ -97,18 +97,44 @@ def start_up():
     """Punto de entrada principal"""
                    # ABCD #
     estado_inicio = "1000"
-    condiciones__ = "1110"
-    alcance______ = "1110"
-    mechanismo___ = "1110"
+    condiciones   = "1110"
+    alcance =       "1110"
+    mechanismo =    "1110"
 
     sys_config = Manager(estado_inicial=estado_inicio)
 
     ### Ejemplo de solución mediante módulo de pyphi ###
 
     analizador_fb = BruteForce(sys_config)
-    analizador_fb.analizar_completamente_una_red()
+    sia_uno = analizador_fb.aplicar_estrategia(condiciones, alcance, mechanismO)
+    print(sia_uno)
+```
+
+Como se aprecia cada variable está asociada con una posición, de forma que las variables a mantener tienen el bit en uno (1), mientras que las que querremos descartar las enviaremos en cero (0).
+
+Por ejemplo una ejecución con Pyphi para una red específica se vería así:
+
+```py
+from models.base.manager import Manager
+
+from src.models.logic.phi import Phi
 
 
+def start_up():
+    """Punto de entrada principal"""
+                   # ABCD #
+    estado_inicio = "1000"
+    condiciones =   "1000"
+    alcance =       "1110"
+    mechanismo =    "1110"
+
+    sys_config = Manager(estado_inicial=estado_inicio)
+
+    ### Ejemplo de solución mediante Pyphi ###
+
+    analizador_fb = Phi(sys_config)
+    sia_dos = analizador_fb.aplicar_estrategia(condiciones, alcance, mechanismo)
+    print(sia_dos)
 ```
 
 ### Pruebas
