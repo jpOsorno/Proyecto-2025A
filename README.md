@@ -38,18 +38,18 @@ Guía de Configuración del Entorno con UV y VSCode
 2. Este comando:
    - Instala todas las dependencias definidas en `pyproject.toml`
    - Instala el proyecto en modo desarrollo (-e)
-   - Crea una carpeta `proyecto_2025a.egg-info` con metadatos del proyecto
+   - Crea una carpeta `proyecto_2025a.egg-info` con metadatos del proyecto.
 
 ## Verificación
 - La instalación es exitosa si:
-  - No hay mensajes de error en la terminal
-  - Se crea la carpeta `proyecto_2025a.egg-info`
-  - Puedes importar las dependencias instaladas desde Python
+  - No hay mensajes de error en la terminal.
+  - Se crea la carpeta `proyecto_2025a.egg-info`.
+  - Puedes importar las dependencias instaladas desde Python.
 
 ## Notas Importantes
-- Siempre usar PowerShell como terminal predeterminada para consistencia
-- El entorno virtual debe estar activado antes de instalar dependencias
-- La carpeta `proyecto_2025a.egg-info` es normal y necesaria - se puede agregar a `.gitignore`
+- Siempre usar PowerShell como terminal predeterminada para consistencia.
+- El entorno virtual debe estar activado antes de instalar dependencias.
+- La carpeta `proyecto_2025a.egg-info` es normal y necesaria - se puede agregar a `.gitignore`.
 
 ## Ejecución del programa
 
@@ -57,6 +57,10 @@ Abres una terminal, escribes `py e` tabulas y das enter, así de simple! Alterna
 
 Por otro lado puedes realizar un anális específico sobre una red
 
-Al final podemos realizar ejecución desde `py exec` y pasar a corregir los errores de la librería.
+Al final podemos realizar ejecución desde `py exec` y pasar a corregir los errores de la librería Pyphi (en el documento `.docs\errors.md` encuentras la guía de bolsillo para arreglar estos problemas).
 
-# 
+
+
+## Pruebas
+
+En el 

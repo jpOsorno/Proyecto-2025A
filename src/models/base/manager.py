@@ -11,7 +11,7 @@ from src.constants.base import (
 
 @dataclass
 class Manager:
-    """El manejador es el encargado de en funcioón al tamaño del estado inicial y la página asociada, el traer el fichero de formato CSV con las TPM's almacenadas en `samples/` para hacer una rápida depuración de los datos para la creación de sistemas.
+    """El manejador es el encargado de en funcioón al tamaño del estado inicial y la página asociada, el traer el fichero de formato CSV con las TPM's almacenadas en `.samples/` para hacer una rápida depuración de los datos para la creación de sistemas.
 
     Args:
     ----
@@ -39,3 +39,13 @@ class Manager:
         return Path(
             f"{RESOLVER_PATH}/N{len(self.estado_inicial)}{self.pagina}/{''.join(self.estado_inicial)}"
         )
+
+    def generar_red(self, dimensiones):
+        if dimensiones < 1:
+            raise ValueError("Esta red no puede tener efectos causales.")
+
+        # if archivo existe
+        # retornar y no crearlo, avisar que existe
+
+        # sino pues acá implementar eso 
+
