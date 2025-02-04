@@ -1,4 +1,3 @@
-# app\models\ncube.py
 from dataclasses import dataclass
 from numpy.typing import NDArray
 import numpy as np

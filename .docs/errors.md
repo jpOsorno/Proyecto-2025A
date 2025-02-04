@@ -62,7 +62,7 @@ class Account(cmp.Orderable, collections.abc.Sequence):  # ✅ Ahora sí #
 
 ## ⭐ Puntos clave a recordar
 
-- 🔄 Este proceso será **repetitivo** - entonces prepárate porque hay que hacer cambios similares en múltiples archivos.
+- 🔄 Este proceso será **repetitivo** - entonces prepárate porque hay que hacer bastantes cambios similares en múltiples archivos.
 - 🎯 El error surge porque Python 3.10+ movió estas colecciones a `collections.abc`.
 - 🛠️ **VSCode/PyCharm** son tus aliados - el autocompletado ayuda a encontrar las importaciones correctas.
 - ✅ Después de cada cambio, asegúrate de probar con cada error hasta que que todo funcione correctamente.

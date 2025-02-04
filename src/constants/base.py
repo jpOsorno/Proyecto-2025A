@@ -35,7 +35,7 @@ NEQ_SYM: str = "≠"
 BITS: tuple[int, int] = (0, 1)
 ACTIVOS, INACTIVOS = True, False
 
-SAMPLES_PATH: str = "app/.samples/"
+SAMPLES_PATH: str = "src/.samples/"
 PROFILING_PATH: str = "review/profiling"
 RESOLVER_PATH: str = "review/resolver"
 CSV_EXTENSION: str = "csv"

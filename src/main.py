@@ -23,10 +23,10 @@ def start_up():
     ### Ejemplo de solución mediante fuerza bruta ###
 
     bf_analyzer = BruteForce(sys_config)
-    sia_dos = bf_analyzer.run(condiciones__, alcance______, mechanismo___)
-    print(sia_dos)
+    # sia_dos = bf_analyzer.run(condiciones__, alcance______, mechanismo___)
+    # print(sia_dos)
     bf_analyzer.analizar_completamente_una_red()
 
-    q_analyzer = QNodes(sys_config)
-    sia_tres = q_analyzer.run(condiciones__, alcance______, mechanismo___)
-    print(sia_tres)
+    # q_analyzer = QNodes(sys_config)
+    # sia_tres = q_analyzer.run(condiciones__, alcance______, mechanismo___)
+    # print(sia_tres)

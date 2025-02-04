@@ -3,7 +3,7 @@ import pandas as pd
 import numpy as np
 from numpy.typing import NDArray
 
-from src.funcs.base import emd_efecto, seleccionar_metrica, setup_logger, literales
+from src.funcs.base import seleccionar_metrica, setup_logger, literales
 from src.funcs.format import fmt_biparticion
 from src.funcs.system import (
     generar_candidatos,
