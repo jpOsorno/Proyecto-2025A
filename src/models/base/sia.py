@@ -5,7 +5,7 @@ import numpy as np
 import numpy.typing as NDArray
 
 from src.middlewares.observer import DebugObserver
-from src.models.base.loader import Loader
+from models.base.manager import Manager
 from src.models.core.system import System
 
 from src.constants.base import COLON_DELIM, STR_ZERO
@@ -24,7 +24,7 @@ class SIA(ABC):
         - `sia_dists_marginales` (np.ndarray): Igualmente, una copia con fines de reutilización durante cálculos con la EMD.
     """
 
-    def __init__(self, config: Loader) -> None:
+    def __init__(self, config: Manager) -> None:
         self.sia_loader = config
         self.sia_debug_observer = DebugObserver()
         self.sia_logger = setup_logger("sia_preparation")

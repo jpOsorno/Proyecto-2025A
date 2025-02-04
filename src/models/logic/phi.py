@@ -2,7 +2,7 @@ import numpy as np
 from src.funcs.base import ABECEDARY, lil_endian, setup_logger
 from src.funcs.format import fmt_biparticion
 from src.middlewares.observer import DebugObserver
-from src.models.base.loader import Loader
+from models.base.manager import Manager
 from src.models.base.sia import SIA
 
 import math
@@ -29,7 +29,7 @@ from src.models.enums.distance import MetricDistance
 class Phi(SIA):
     """Class Phi is used as base for other strategies, bruteforce with pyphi."""
 
-    def __init__(self, config: Loader) -> None:
+    def __init__(self, config: Manager) -> None:
         super().__init__(config)
         self.logger = setup_logger("bruteforce_analysis")
         self.debug_observer = DebugObserver()

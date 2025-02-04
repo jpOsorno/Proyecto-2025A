@@ -53,4 +53,10 @@ Guía de Configuración del Entorno con UV y VSCode
 
 ## Ejecución del programa
 
+Abres una terminal, escribes `py e` tabulas y das enter, así de simple! Alternativamente escribiendo en terminal `python .\exec.py` deberás ejecutar una muestra del aplicativo para una Red de 04 nodos, generarando un análisis completo sobre la misma, de tal forma que se obtendrán dos artefactos tras la ejecución
+
+Por otro lado puedes realizar un anális específico sobre una red
+
 Al final podemos realizar ejecución desde `py exec` y pasar a corregir los errores de la librería.
+
+# 

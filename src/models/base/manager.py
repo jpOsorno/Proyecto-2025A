@@ -10,8 +10,8 @@ from src.constants.base import (
 
 
 @dataclass
-class Loader:
-    """El cargador es el encargado de en funcioón al tamaño del estado inicial y la página asociada, el traer el fichero de formato CSV con las TPM's almacenadas en `samples/` para hacer una rápida depuración de los datos para la creación de sistemas.
+class Manager:
+    """El manejador es el encargado de en funcioón al tamaño del estado inicial y la página asociada, el traer el fichero de formato CSV con las TPM's almacenadas en `samples/` para hacer una rápida depuración de los datos para la creación de sistemas.
 
     Args:
     ----

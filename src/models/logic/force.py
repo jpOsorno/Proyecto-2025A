@@ -10,7 +10,7 @@ from src.funcs.system import (
     generar_particiones,
     generar_subsistemas,
 )
-from src.models.base.loader import Loader
+from models.base.manager import Manager
 from src.models.base.sia import SIA
 from src.models.core.system import System
 from src.models.core.solution import Solution
@@ -37,7 +37,7 @@ class BruteForce(SIA):
     Este archivo de profilling de extensión HTML lo arrastras hasta tu navegador y se visualizará la depuración del aplicativo a lo largo del tiepmo en dos vistas, tanto temporal como cumulativa sobre coste temporal en subrutinas.
     """
 
-    def __init__(self, config: Loader):
+    def __init__(self, config: Manager):
         super().__init__(config)
         self.logger = setup_logger("bruteforce_analysis")
         self.debug_observer = DebugObserver()

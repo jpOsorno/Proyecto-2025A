@@ -1,8 +1,10 @@
+from src.middlewares.profile import profiler_manager
 from src.main import start_up
 
 
 def main():
-    """Backend initializer."""
+    """Inicializar el aplicativo."""
+    profiler_manager.enabled = True
     start_up()
 
 

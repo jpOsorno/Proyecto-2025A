@@ -2,7 +2,7 @@ import numpy as np
 from src.funcs.base import emd_efecto, setup_logger, ABECEDARY
 from src.funcs.format import fmt_biparte_q, fmt_parte_q
 from src.middlewares.slogger import get_logger
-from src.models.base.loader import Loader
+from models.base.manager import Manager
 from src.models.base.sia import SIA
 
 from src.models.core.solution import Solution
@@ -91,7 +91,7 @@ class QNodes(SIA):
       a través de las optimizaciones de TensorFlow.
     """
 
-    def __init__(self, config: Loader):
+    def __init__(self, config: Manager):
         super().__init__(config)
         self.m: int
         self.n: int
