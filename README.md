@@ -64,14 +64,12 @@ Tras ello podrás realizar distintas pruebas en el aplicativo, por ejemplo, el c
 ```py
 from models.base.manager import Manager
 
-from src.models.logic.phi import Phi
 from src.models.logic.force import BruteForce
-from src.models.logic.q_nodes import QNodes
 
 
 def start_up():
     """Punto de entrada principal"""
-                   # ABCD
+                   # ABCD #
     estado_inicio = "1000"
     sys_config = Manager(estado_inicial=estado_inicio)
 
@@ -93,21 +91,27 @@ Secundariamente sobre el directorio `logs`, cada que se use el objeto `self.logg
 
 Así mismo si quisieramos hacer más pruebas con un subsistema específico para una red sería con:
 ```py
+from models.base.manager import Manager
+
+from src.models.logic.force import BruteForce
+
+
 def start_up():
     """Punto de entrada principal"""
-                   # ABCD #
+    # ABCD #
     estado_inicio = "1000"
-    condiciones   = "1110"
-    alcance =       "1110"
-    mechanismo =    "1110"
+    condiciones = "1110"
+    alcance = "1110"
+    mechanismo = "1110"
 
     sys_config = Manager(estado_inicial=estado_inicio)
 
     ### Ejemplo de solución mediante módulo de pyphi ###
 
     analizador_fb = BruteForce(sys_config)
-    sia_uno = analizador_fb.aplicar_estrategia(condiciones, alcance, mechanismO)
+    sia_uno = analizador_fb.aplicar_estrategia(condiciones, alcance, mechanismo)
     print(sia_uno)
+
 ```
 
 Como se aprecia cada variable está asociada con una posición, de forma que las variables a mantener tienen el bit en uno (1), mientras que las que querremos descartar las enviaremos en cero (0).
@@ -125,17 +129,19 @@ def start_up():
                    # ABCD #
     estado_inicio = "1000"
     condiciones =   "1000"
-    alcance =       "1110"
-    mechanismo =    "1110"
+    mechanismo =    "0110"
+    alcance =       "1010"
 
     sys_config = Manager(estado_inicial=estado_inicio)
 
     ### Ejemplo de solución mediante Pyphi ###
 
-    analizador_fb = Phi(sys_config)
-    sia_dos = analizador_fb.aplicar_estrategia(condiciones, alcance, mechanismo)
+    analizador_fi = Phi(sys_config)
+    sia_dos = analizador_fi.aplicar_estrategia(condiciones, alcance, mechanismo)
     print(sia_dos)
 ```
+
+Donde sobre un sistema de nodos $V=\{A,B,C,D\}$ tomamos un sistema candidato $V_c=\{A,B,C\}$ subsistema, y en los tiempos $t_0=\{B,C\}$ y $t_1=\{A,C\}$, nótese cómo sólo en el subsistema se presenta temporalidad.
 
 ### Pruebas
 
