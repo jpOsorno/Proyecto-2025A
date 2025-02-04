@@ -191,7 +191,11 @@ class Solution:
             motor.setProperty("rate", 150)
             motor.setProperty("volume", 0.9)
 
-            mensaje = f"Solución encontrada. El valor de fi es {self.perdida:.4f}"
+            mensaje = "Solución encontrada. " + (
+                f"El valor de fi es de {self.perdida:.2f}"
+                if self.perdida > 0
+                else "No hubo pérdida."
+            )
             motor.say(mensaje)
             motor.runAndWait()
         except Exception as e:
@@ -224,10 +228,10 @@ class Solution:
 
 {Fore.RED}{self.estrategia} fue la estrategia de solucion.{Style.RESET_ALL}
 
-{Fore.BLUE}Notación utilizada en indexación:{Style.RESET_ALL}
-{aplicacion.notacion}
 {Fore.BLUE}Distancia métrica utilizada:{Style.RESET_ALL}
 {aplicacion.distancia_metrica}
+{Fore.BLUE}Notación utilizada en indexación:{Style.RESET_ALL}
+{aplicacion.notacion}
 
 {Fore.YELLOW}Distribución del Subsistema:{Style.RESET_ALL}
 {formatear_distribucion(self.distribucion_subsistema)}

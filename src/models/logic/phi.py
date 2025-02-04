@@ -38,7 +38,7 @@ class Phi(SIA):
         )
 
     @profile(context={"type": "pyphi_analysis"})
-    def run(self, condiciones: str, alcance: str, mecanismo: str):
+    def aplicar_estrategia(self, condiciones: str, alcance: str, mecanismo: str):
         pyphi.config.WELCOME_OFF = "yes"
         estado_inicial = tuple(int(s) for s in self.sia_loader.estado_inicial)
         tamanho = len(estado_inicial)

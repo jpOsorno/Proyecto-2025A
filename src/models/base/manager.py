@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from pathlib import Path
 
+from src.models.base.aplication import aplicacion
 from src.constants.base import (
     ABC_START,
     CSV_EXTENSION,
@@ -25,7 +26,7 @@ class Manager:
     """
 
     estado_inicial: str
-    pagina: str = ABC_START
+    pagina: str = aplicacion.pagina_red_muestra
     ruta_base: Path = Path(SAMPLES_PATH)
 
     @property
@@ -47,5 +48,4 @@ class Manager:
         # if archivo existe
         # retornar y no crearlo, avisar que existe
 
-        # sino pues acá implementar eso 
-
+        # sino pues acá implementar eso

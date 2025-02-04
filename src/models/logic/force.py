@@ -49,7 +49,7 @@ class BruteForce(SIA):
         )
 
     @profile(context={"type": "bruteforce_analysis"})
-    def run(self, condiciones: str, alcance: str, mecanismo: str):
+    def aplicar_estrategia(self, condiciones: str, alcance: str, mecanismo: str):
         """
         Análisis por fuerza brutal sobre una red específica para un sistema candidato llevado a un subsistema determinado por el alcance y mecanismo indicado por el usuario.
 

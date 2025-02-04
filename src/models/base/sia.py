@@ -33,7 +33,7 @@ class SIA(ABC):
         self.sia_dists_marginales: NDArray[np.float32]
 
     @abstractmethod
-    def run(self):
+    def aplicar_estrategia(self):
         """
         Método principal sobre el que las clases herederas implementarán su algoritmo de resolución del problema con una metodología determinada.
         """

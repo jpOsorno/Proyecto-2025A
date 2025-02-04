@@ -103,7 +103,7 @@ class QNodes(SIA):
         self.logger = get_logger("q_analysis")
 
     # @profile(context={"type": "Q_analysis"})
-    def run(self, conditions, purview, mechansim):
+    def aplicar_estrategia(self, conditions, purview, mechansim):
         self.sia_preparar_subsistema(conditions, purview, mechansim)
 
         # Pondremos el orden (tiempo, indice) con tiempo=1 el futuro, tiempo=0 el presente.
