@@ -11,5 +11,5 @@ def start_up():
 
     ### Ejemplo de solución mediante fuerza bruta ###
 
-    bf_analyzer = BruteForce(sys_config)
-    bf_analyzer.analizar_completamente_una_red()
+    analizador_fb = BruteForce(sys_config)
+    analizador_fb.analizar_completamente_una_red()
