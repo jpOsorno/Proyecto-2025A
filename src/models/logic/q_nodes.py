@@ -235,7 +235,6 @@ class QNodes(SIA):
                     ...
 
                 omegas_ciclo.append(deltas_ciclo[indice_mip])
-                deltas_ciclo.pop(indice_mip)
 
                 self.logger.debug(
                     f"\nCICLO Minimo delta hallado:\n\t{deltas_ciclo[indice_mip]=}"
