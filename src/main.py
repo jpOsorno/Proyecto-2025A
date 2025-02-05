@@ -8,16 +8,16 @@ from src.models.logic.force import BruteForce
 def start_up():
     """Punto de entrada principal"""
     #                ABCD #
-    estado_inicio = "1000"
+    estado_inicio = "10000"
     config_sistema = Manager(estado_inicial=estado_inicio)
 
     ## Ejemplo de solución mediante fuerza bruta ##
 
     analizador_fb = BruteForce(config_sistema)
-    print(analizador_fb.aplicar_estrategia("1110", "1111", "1111"))
+    print(analizador_fb.aplicar_estrategia("11100", "11110", "1111"))
 
     analizador_fb = QNodes(config_sistema)
-    print(analizador_fb.aplicar_estrategia("1110", "1111", "1111"))
+    print(analizador_fb.aplicar_estrategia("11100", "11110", "1111"))
 
     analizador_fb = Phi(config_sistema)
-    print(analizador_fb.aplicar_estrategia("1110", "1111", "1111"))
+    print(analizador_fb.aplicar_estrategia("11100", "11110", "1111"))
