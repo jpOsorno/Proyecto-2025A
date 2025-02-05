@@ -109,7 +109,6 @@ class QNodes(SIA):
     def aplicar_estrategia(self, conditions, purview, mechansim):
         self.sia_preparar_subsistema(conditions, purview, mechansim)
 
-        # Pondremos el orden (tiempo, indice) con tiempo=1 el futuro, tiempo=0 el presente.
         purv = tuple((EFECTO, pur) for pur in self.sia_subsistema.indices_ncubos)
         mech = tuple((ACTUAL, mec) for mec in self.sia_subsistema.dims_ncubos)
 
