@@ -4,6 +4,7 @@ from src.middlewares.profile import profiler_manager, profile
 from src.funcs.format import fmt_biparte_q
 from controllers.manager import Manager
 from src.models.base.sia import SIA
+from copy import copy
 
 from src.models.core.solution import Solution
 from src.constants.base import (
@@ -209,6 +210,8 @@ class QNodes(SIA):
                 emd_local = 1e5
                 indice_mip: int
                 for k in range(len(deltas_ciclo)):
+                    print(f"{self.tiempos=}")
+
                     emd_union, emd_delta, dist_marginal_delta = self.funcion_submodular(
                         deltas_ciclo[k], omegas_ciclo
                     )
@@ -292,7 +295,8 @@ class QNodes(SIA):
             )
             Esto lo hice así para hacer almacenamiento externo de la emd individual y su distribución marginal en las particiones candidatas.
         """
-        tiempos = np.copy(self.tiempos)
+
+        tiempos = copy(self.tiempos)
         emd_delta = INFTY_NEG
 
         if isinstance(deltas, tuple):

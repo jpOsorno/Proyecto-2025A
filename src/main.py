@@ -1,6 +1,8 @@
+from models.strategies.phi import Phi
+from models.strategies.q_nodes import QNodes
 from src.controllers.manager import Manager
 
-from src.models.logic.force import BruteForce
+from src.models.strategies.force import BruteForce
 
 
 def start_up():
@@ -11,5 +13,11 @@ def start_up():
 
     ## Ejemplo de solución mediante fuerza bruta ##
 
-    analizador_fb = BruteForce(config_sistema)
-    analizador_fb.analizar_completamente_una_red()
+    analizador_fb = QNodes(config_sistema)
+    resultado = analizador_fb.aplicar_estrategia(
+        "1111",
+        "0111",
+        "1000",
+    )
+
+    print(resultado)
