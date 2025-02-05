@@ -106,7 +106,7 @@ class QNodes(SIA):
         self.sia_preparar_subsistema(conditions, purview, mechansim)
 
         part_t1 = np.array([])
-        part_t0 = np.array([1, 2])
+        part_t0 = np.array([1, 0])
 
         part = self.sia_subsistema.bipartir(part_t1, part_t0)
         dist_part = part.distribucion_marginal()
@@ -195,7 +195,16 @@ class QNodes(SIA):
                 for k in range(len(deltas_ciclo)):
                     self.logger.warn(f"\n{'-'*40}{k=}")
                     self.logger.debug("ITER calculando cada delta")
-                    iter_emd = self.funcion_submodular(deltas_ciclo[k], omegas_ciclo)
+
+                    if tuple(deltas_ciclo[k]) in self.memory[tuple(deltas_ciclo[k])]:
+                        # parte memoizada
+                        iter_emd = self.memory[tuple(deltas_ciclo[k])]
+                    else:
+                        iter_emd = self.funcion_submodular(
+                            deltas_ciclo[k], omegas_ciclo
+                        )
+                        self.memory[tuple(deltas_ciclo[k])] = iter_emd
+
                     self.logger.debug(f"local: {iter_emd}, global: {minimal_emd}")
                     if iter_emd < minimal_emd:
                         minimal_emd = iter_emd
@@ -301,6 +310,7 @@ class QNodes(SIA):
         self.logger.debug(f"{indivector_marginal=}")
 
         # memoizamos el individuo
+        self.logger.info(f"{individual_emd}")
 
         self.logger.info("ind_part")
         self.logger.info(f"{ind_part}")
