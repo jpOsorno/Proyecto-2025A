@@ -2,13 +2,15 @@
 
 Base del proyecto para dar desarrollo a estrategias más elaboradas.
 
+Para clonar el repositorio con github debemos tener GIT y aplicar el comando sobre un directorio cómodo para guardar el proyecto `git clone https://github.com/Complexum/Proyecto-2025A .`.
+
 ---
 
 ## Instalación
 
 Guía de Configuración del Entorno con UV y VSCode
 
-### ⚙️ Instalación - Configuración Express con UV + VSCode
+### ⚙️ Instalación - Configuración con UV + VSCode
 
 #### 📋 **Requisitos Mínimos**
 - ![PowerShell](https://img.shields.io/badge/-PowerShell-blue?style=flat-square) Terminal PowerShell (¡nada de CMD!)
@@ -31,12 +33,17 @@ Guía de Configuración del Entorno con UV y VSCode
      *(Si no: ejecuta `.\.venv\Scripts\activate` manualmente)*
 
 3. **💣 Instalación con UV**  
-   En la terminal PowerShell (.venv activado):  
+   En la terminal PowerShell (.venv activado): 
+   Primero instalamos `uv` con 
+   ```powershell
+   pip install uv
+   ```
+   Procedemos a instalar las librerías con
    ```powershell
    python -m uv pip install -e .
    ```
 
-> Este comando
+> **Este comando:**
 > Instala dependencias de pyproject.toml
 > Configura el proyecto en modo desarrollo (-e)
 > Genera proyecto_2025a.egg-info con metadatos
