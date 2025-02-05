@@ -1,16 +1,15 @@
-from controllers.manager import Manager
+from src.controllers.manager import Manager
 
 from src.models.logic.force import BruteForce
 
 
 def start_up():
     """Punto de entrada principal"""
-    #                ABCD #
+    # ABCD #
     estado_inicio = "1000"
+    config_sistema = Manager(estado_inicial=estado_inicio)
 
-    sys_config = Manager(estado_inicial=estado_inicio)
+    ## Ejemplo de solución mediante fuerza bruta ##
 
-    ### Ejemplo de solución mediante módulo de pyphi ###
-
-    analizador_fb = BruteForce(sys_config)
+    analizador_fb = BruteForce(config_sistema)
     analizador_fb.analizar_completamente_una_red()

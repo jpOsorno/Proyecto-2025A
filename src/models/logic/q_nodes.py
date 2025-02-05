@@ -185,6 +185,7 @@ class QNodes(SIA):
             deltas_ciclo = vertices_fase[1:]
 
             self.logger.debug(f"fase inicia con W: {omegas_ciclo}")
+            partition_emd = INFTY_POS
 
             for j in range(len(deltas_ciclo) - 1):
                 self.logger.warn(f"\n{'='*45}{j=}")
@@ -209,6 +210,10 @@ class QNodes(SIA):
                         local_min_emd = iter_emd
                         iter_mip = deltas_ciclo[k]
                         index_mip = k
+                        partition_emd = ind_emd
+                    else:
+                        partition_emd = ind_emd
+
                     ...
 
                 omegas_ciclo.append(deltas_ciclo[index_mip])
@@ -227,9 +232,13 @@ class QNodes(SIA):
             self.logger.debug("Añadir nueva partición entre ultimos de omega y delta")
             self.logger.debug(f"{omegas_ciclo, deltas_ciclo=}")
 
-            if i == 0:
-                # Añadimos la primera partición, un único elemento
-                self.partition_memory[tuple(deltas_ciclo)]
+            self.partition_memory[
+                tuple(
+                    deltas_ciclo[LAST_IDX]
+                    if isinstance(deltas_ciclo[LAST_IDX], list)
+                    else deltas_ciclo
+                )
+            ] = partition_emd
 
             last_pair = (
                 [omegas_ciclo[LAST_IDX]]
@@ -241,7 +250,7 @@ class QNodes(SIA):
                 else deltas_ciclo  # adición de los dos últimos elementos en uno sólo.
             )
 
-            # particiones_candidatas.append(last_pair)
+            # self.partition_memory[tuple(last_pair)] = partition_emd
 
             self.logger.debug(f"{last_pair=}")
 
@@ -252,12 +261,12 @@ class QNodes(SIA):
             vertices_fase = omegas_ciclo
             ...
 
-        # self.logger.warn(
-        #     f"\nGrupos partición obtenidos durante ejecucion:\n{(particiones_candidatas)=}"
-        # )
+        self.logger.warn(
+            f"\nGrupos partición obtenidos durante ejecucion:\n{(self.partition_memory)=}"
+        )
         self.logger.warn(f"{self.individual_memory=}")
 
-        return min(self.individual_memory, key=lambda k: self.individual_memory[k])
+        return min(self.individual_memory, key=lambda k: self.partition_memory[k])
         ...
 
     def funcion_submodular(

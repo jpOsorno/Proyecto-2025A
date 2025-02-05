@@ -64,7 +64,7 @@ Al final podemos realizar ejecución desde `py exec` y pasar a corregir los erro
 Tras ello podrás realizar distintas pruebas en el aplicativo, por ejemplo, el código por defecto tenemos:
 
 ```py
-from models.base.manager import Manager
+from src.controllers.manager  import Manager
 
 from src.models.logic.force import BruteForce
 
@@ -95,7 +95,7 @@ Secundariamente sobre el directorio `logs`, cada que se use el objeto `self.logg
 
 Así mismo si quisieramos hacer más pruebas con un subsistema **específico** para una red sería con:
 ```py
-from models.base.manager import Manager
+from src.controllers.manager  import Manager
 
 from src.models.logic.force import BruteForce
 
@@ -123,7 +123,7 @@ Como se aprecia cada variable está asociada con una posición, de forma que las
 Por ejemplo una ejecución con **Pyphi** para una red específica se vería así:
 
 ```py
-from models.base.manager import Manager
+from src.controllers.manager  import Manager
 
 from src.models.logic.phi import Phi
 
