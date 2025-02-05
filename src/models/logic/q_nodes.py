@@ -135,7 +135,7 @@ class QNodes(SIA):
         mip = self.algorithm(vertices)
 
         # self.view_solution(mip)
-        return (self.individual_memory[mip],)
+        return (self.partition_memory[mip],)
 
         # Solution(
         #     )
