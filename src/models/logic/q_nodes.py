@@ -291,6 +291,14 @@ class QNodes(SIA):
 
         if isinstance(deltas, tuple):
             d_tiempo, d_indice = deltas
+
+            print(f"{tiempos=}")
+            print(f"{d_tiempo=}")
+            print(f"{d_indice=}")
+            print(f"{tiempos[0][0]=}")
+            print(f"{tiempos[0][1]=}")
+            print(f"{tiempos[0][2]=}")
+
             tiempos[d_tiempo][d_indice] = ACTIVOS
         else:
             for delta in deltas:

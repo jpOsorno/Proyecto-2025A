@@ -222,7 +222,13 @@ class Solution:
         trilinea = "≡" * 50
 
         def formatear_distribucion(dist: np.ndarray):
-            return "[" + " ".join(f"{x:.4f}" for x in dist) + "]"
+            return (
+                "["
+                + " ".join(
+                    f"{Fore.RESET if x>0 else Fore.LIGHTBLACK_EX}{x:.4f}" for x in dist
+                )
+                + "]"
+            )
 
         return f"""{Fore.CYAN}{bilinea}{Style.RESET_ALL}
 
