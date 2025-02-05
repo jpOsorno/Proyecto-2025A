@@ -19,7 +19,7 @@ from src.middlewares.profile import profile, profiler_manager
 from src.middlewares.observer import DebugObserver
 
 from models.base.application import aplicacion
-from src.constants.base import ACTUAL, EFECTO
+from src.constants.base import ACTUAL, EFECTO, VOID_STR
 
 
 class BruteForce(SIA):
@@ -67,13 +67,10 @@ class BruteForce(SIA):
 
         self.logger.info(condiciones)
 
-        small_phi, mejor_particion, mejor_dist_marg = np.infty, "∅", None
+        small_phi, mejor_particion, mejor_dist_marg = np.infty, VOID_STR, None
         futuros = self.sia_subsistema.indices_ncubos
         presentes = self.sia_subsistema.dims_ncubos
         m, n = futuros.size, presentes.size
-
-        # print(f"{futuros=}")
-        # print(f"{presentes=}")
 
         for subalcance, submecanismo in generar_particiones(m, n):
             alcance_primal = np.array(
@@ -95,9 +92,6 @@ class BruteForce(SIA):
                 part_marg_dist, self.sia_dists_marginales
             )
             if emd_value < small_phi:
-                # print(f"{subalcance=}")
-                # print(f"{submecanismo=}")
-
                 small_phi = emd_value
                 mejor_dist_marg = part_marg_dist
                 mejor_particion = submecanismo, subalcance
@@ -113,9 +107,6 @@ class BruteForce(SIA):
         for bit, j in zip(mejor_particion[ACTUAL], mejor_sistema.dims_ncubos):
             dual[bit].append(j)
 
-        # print(f"{prim=}")
-        # print(f"{dual=}")
-
         biparticion_formateada = fmt_biparticion(
             [dual[EFECTO], prim[EFECTO]],
             [dual[ACTUAL], prim[ACTUAL]],
@@ -127,8 +118,6 @@ class BruteForce(SIA):
             self.sia_dists_marginales,
             mejor_dist_marg,
             biparticion_formateada,
-            ##########################################
-            hablar=False,
         )
 
     @profile(context={"type": "bruteforce_full_analysis"})
