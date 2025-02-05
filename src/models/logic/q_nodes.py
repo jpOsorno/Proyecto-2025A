@@ -1,5 +1,5 @@
 import numpy as np
-from src.funcs.base import emd_efecto, ABECEDARY
+from src.funcs.base import emd_efecto, ABECEDARY, setup_logger
 from src.middlewares.profile import profiler_manager, profile
 from src.funcs.format import fmt_biparte_q
 from controllers.manager import Manager
@@ -14,6 +14,7 @@ from src.constants.base import (
     INFTY_POS,
     INT_ONE,
     LAST_IDX,
+    NEQ_SYM,
 )
 
 
@@ -83,13 +84,10 @@ class QNodes(SIA):
 
     Notes:
     -----
-    - La clase implementa una versión secuencial del algoritmo Q
-      para encontrar la partición que minimiza la pérdida de información.
+    - La clase implementa una versión secuencial del algoritmo Q para encontrar la partición que minimiza la pérdida de información.
     - Utiliza memoización para evitar recálculos innecesarios durante el proceso.
     - El análisis se realiza considerando dos tiempos: actual (presente) y
       efecto (futuro).
-    - La implementación soporta paralelización tanto en CPU como en GPU
-      a través de las optimizaciones de TensorFlow.
     """
 
     def __init__(self, config: Manager):
@@ -102,8 +100,10 @@ class QNodes(SIA):
         self.times: tuple[np.ndarray, np.ndarray]
         self.labels = [tuple(s.lower() for s in ABECEDARY), ABECEDARY]
         self.vertices: set[tuple]
-        self.individual_memory = dict()
+        self.memoria_delta = dict()
         self.partition_memory = dict()
+
+        self.logger = setup_logger("q_strat")
 
     # @profile(context={"type": "q_analysis"})
     def aplicar_estrategia(self, conditions, purview, mechansim):
@@ -189,22 +189,37 @@ class QNodes(SIA):
 
         omegas_ciclo = omegas_origen
         deltas_ciclo = deltas_origen
+        self.logger.debug(omegas_ciclo, deltas_ciclo)
 
         for i in range(len(vertices_fase) - 2):
+            self.logger.warn(f"\n{'≡' * 50}{i=}")
+            self.logger.debug(
+                f"FASE con nuevo grupo formado (si i{NEQ_SYM}0):\n\t{vertices_fase}"
+            )
+
             omegas_ciclo = [vertices_fase[0]]
             deltas_ciclo = vertices_fase[1:]
+
+            self.logger.debug(f"fase inicia con W: {omegas_ciclo}")
 
             partition_emd = INFTY_POS
 
             for j in range(len(deltas_ciclo) - 1):
+                self.logger.warn(f"\n{'='*45}{j=}")
+                self.logger.debug(f"CICLO W crece: {omegas_ciclo}")
+
                 local_min_emd = 1e5
                 index_mip: int
                 for k in range(len(deltas_ciclo)):
+                    self.logger.warn(f"\n{'-'*40}{k=}")
+                    self.logger.debug("ITER calculando cada delta")
+
                     comp_emd, ind_emd, ind_dist = self.funcion_submodular(
                         deltas_ciclo[k], omegas_ciclo
                     )
                     iter_emd = comp_emd - ind_emd
 
+                    self.logger.debug(f"local: {iter_emd}, global: {local_min_emd}")
                     if iter_emd < local_min_emd:
                         local_min_emd = iter_emd
                         index_mip = k
@@ -218,7 +233,16 @@ class QNodes(SIA):
 
                 omegas_ciclo.append(deltas_ciclo[index_mip])
                 deltas_ciclo.pop(index_mip)
+
+                self.logger.debug(
+                    f"\nCICLO Minimo delta hallado:\n\t{deltas_ciclo[index_mip]=}"
+                )
+                self.logger.debug("\tAñadir a ciclo omega. Quitándolo de deltas.")
+                deltas_ciclo.pop(index_mip)
                 ...
+
+            self.logger.debug("Añadir nueva partición entre ultimos de omega y delta")
+            self.logger.debug(f"{omegas_ciclo, deltas_ciclo=}")
 
             self.partition_memory[
                 tuple(
@@ -237,9 +261,15 @@ class QNodes(SIA):
                 if isinstance(deltas_ciclo[LAST_IDX], list)
                 else deltas_ciclo
             )
+
+            self.logger.debug(f"{last_pair=}")
+
             omegas_ciclo.pop()
             omegas_ciclo.append(last_pair)
 
+            self.logger.warn(
+                f"\nGrupos partición obtenidos durante ejecucion:\n{(self.partition_memory)=}"
+            )
             vertices_fase = omegas_ciclo
             ...
 
@@ -283,64 +313,86 @@ class QNodes(SIA):
             )
             Esto lo hice así para hacer almacenamiento externo de la emd individual y su distribución marginal en las particiones candidatas.
         """
-        times = np.copy(self.times)
-        individual_emd = INFTY_NEG
+        tiempos = np.copy(self.times)
+        emd_delta = INFTY_NEG
+
+        self.logger.debug(f"{deltas=}")
 
         if isinstance(deltas, tuple):
-            d_time, d_index = deltas
-            times[d_time][d_index] = ACTIVOS
+            d_tiempo, d_indice = deltas
+            tiempos[d_tiempo][d_indice] = ACTIVOS
         else:
             for delta in deltas:
-                d_time, d_index = delta
-                times[d_time][d_index] = ACTIVOS
+                d_tiempo, d_indice = delta
+                tiempos[d_tiempo][d_indice] = ACTIVOS
 
-        if tuple(deltas) in self.individual_memory:
-            individual_emd, indivector_marginal = self.individual_memory[tuple(deltas)]
+        self.logger.debug(f"{self.sia_dists_marginales=}")
+
+        if tuple(deltas) in self.memoria_delta:
+            emd_delta, vector_delta_marginal = self.memoria_delta[tuple(deltas)]
         else:
-            individual = self.sia_subsistema
+            copia_delta = self.sia_subsistema
 
-            dims_efecto_ind = tuple(
-                idx for idx, bit in enumerate(times[EFECTO]) if bit == INT_ONE
+            dims_alcance_delta = tuple(
+                idx for idx, bit in enumerate(tiempos[EFECTO]) if bit == INT_ONE
             )
-            dims_presente_ind = tuple(
-                idx for idx, bit in enumerate(times[ACTUAL]) if bit == INT_ONE
+            dims_mecanismo_delta = tuple(
+                idx for idx, bit in enumerate(tiempos[ACTUAL]) if bit == INT_ONE
             )
 
-            ind_part = individual.bipartir(
-                np.array(dims_efecto_ind, dtype=np.int8),
-                np.array(dims_presente_ind, dtype=np.int8),
+            particion_delta = copia_delta.bipartir(
+                np.array(dims_alcance_delta, dtype=np.int8),
+                np.array(dims_mecanismo_delta, dtype=np.int8),
             )
-            indivector_marginal = ind_part.distribucion_marginal()
-            individual_emd = emd_efecto(indivector_marginal, self.sia_dists_marginales)
+            vector_delta_marginal = particion_delta.distribucion_marginal()
+            emd_delta = emd_efecto(vector_delta_marginal, self.sia_dists_marginales)
 
-            self.individual_memory[tuple(deltas)] = individual_emd, indivector_marginal
+            self.memoria_delta[tuple(deltas)] = emd_delta, vector_delta_marginal
+
+        self.logger.info(f"{particion_delta}")
+        self.logger.debug(f"{vector_delta_marginal=}")
+        self.logger.info(f"{tiempos[EFECTO], tiempos[ACTUAL]=}")
+        self.logger.info(f"{emd_delta}")
+
+        # Unión #
+
+        self.logger.debug(f"{omegas=}")
 
         for omega in omegas:
             if isinstance(omega, list):
                 for omg in omega:
                     o_time, o_index = omg
-                    times[o_time][o_index] = ACTIVOS
+                    tiempos[o_time][o_index] = ACTIVOS
             else:
                 o_time, o_index = omega
-                times[o_time][o_index] = ACTIVOS
+                tiempos[o_time][o_index] = ACTIVOS
 
-        combinacion = self.sia_subsistema
+        self.logger.debug(f"{self.sia_dists_marginales=}")
 
-        dims_efecto_comb = tuple(
-            idx for idx, bit in enumerate(times[EFECTO]) if bit == INT_ONE
+        copia_union = self.sia_subsistema
+
+        dims_alcance_union = tuple(
+            idx for idx, bit in enumerate(tiempos[EFECTO]) if bit == INT_ONE
         )
-        dims_presente_comb = tuple(
-            idx for idx, bit in enumerate(times[ACTUAL]) if bit == INT_ONE
+        dims_mecanismo_union = tuple(
+            idx for idx, bit in enumerate(tiempos[ACTUAL]) if bit == INT_ONE
         )
 
-        comb_part = combinacion.bipartir(
-            np.array(dims_efecto_comb, dtype=np.int8),
-            np.array(dims_presente_comb, dtype=np.int8),
+        particion_union = copia_union.bipartir(
+            np.array(dims_alcance_union, dtype=np.int8),
+            np.array(dims_mecanismo_union, dtype=np.int8),
         )
-        comvector_marginal = comb_part.distribucion_marginal()
-        combinada_emd = emd_efecto(comvector_marginal, self.sia_dists_marginales)
+        vector_union_marginal = particion_union.distribucion_marginal()
+        emd_union = emd_efecto(vector_union_marginal, self.sia_dists_marginales)
 
-        return combinada_emd, individual_emd, indivector_marginal
+        self.logger.info(f"{particion_union}")
+        self.logger.debug(f"{vector_union_marginal=}")
+        self.logger.info(f"{tiempos[EFECTO], tiempos[ACTUAL]=}")
+        self.logger.info(f"{emd_union}")
+
+        self.logger.debug(f"{emd_union - emd_delta}={emd_union}-{emd_delta}")
+
+        return emd_union, emd_delta, vector_delta_marginal
 
     def nodes_complement(self, nodes: list[tuple[int, int]]):
         return list(set(self.vertices) - set(nodes))
