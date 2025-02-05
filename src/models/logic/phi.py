@@ -2,7 +2,7 @@ import numpy as np
 from src.funcs.base import ABECEDARY, lil_endian, setup_logger
 from src.funcs.format import fmt_biparticion
 from src.middlewares.observer import DebugObserver
-from models.base.manager import Manager
+from controllers.manager import Manager
 from src.models.base.sia import SIA
 
 import math

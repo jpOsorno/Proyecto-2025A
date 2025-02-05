@@ -2,7 +2,7 @@ import numpy as np
 from src.funcs.base import emd_efecto, setup_logger, ABECEDARY
 from src.funcs.format import fmt_biparte_q, fmt_parte_q
 from src.middlewares.slogger import get_logger
-from models.base.manager import Manager
+from controllers.manager import Manager
 from src.models.base.sia import SIA
 
 from src.models.core.solution import Solution
@@ -101,6 +101,19 @@ class QNodes(SIA):
         self.memory = dict()
 
         self.logger = get_logger("q_analysis")
+
+    def prueba_marginal(self, conditions, purview, mechansim):
+        self.sia_preparar_subsistema(conditions, purview, mechansim)
+
+        part_t1 = np.array([])
+        part_t0 = np.array([1, 2])
+
+        part = self.sia_subsistema.bipartir(part_t1, part_t0)
+        dist_part = part.distribucion_marginal()
+
+        self.logger.warn(self.sia_subsistema)
+        self.logger.warn(part)
+        self.logger.warn(dist_part)
 
     # @profile(context={"type": "Q_analysis"})
     def aplicar_estrategia(self, conditions, purview, mechansim):

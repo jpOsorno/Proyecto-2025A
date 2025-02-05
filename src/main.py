@@ -1,6 +1,6 @@
-from models.base.manager import Manager
+from controllers.manager import Manager
 
-from src.models.logic.force import BruteForce
+from src.models.logic.q_nodes import QNodes
 
 
 def start_up():
@@ -15,6 +15,7 @@ def start_up():
 
     ### Ejemplo de solución mediante módulo de pyphi ###
 
-    analizador_fb = BruteForce(sys_config)
-    sia_uno = analizador_fb.aplicar_estrategia(condiciones, alcance, mechanismo)
+    analizador_q = QNodes(sys_config)
+    # sia_uno = analizador_fb.prueba_marginal(condiciones, alcance, mechanismo)
+    sia_uno = analizador_q.prueba_marginal(condiciones, alcance, mechanismo)
     print(sia_uno)

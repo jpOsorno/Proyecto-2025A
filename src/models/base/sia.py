@@ -5,7 +5,7 @@ import numpy as np
 import numpy.typing as NDArray
 
 from src.middlewares.observer import DebugObserver
-from models.base.manager import Manager
+from controllers.manager import Manager
 from src.models.core.system import System
 
 from src.constants.base import COLON_DELIM, STR_ZERO

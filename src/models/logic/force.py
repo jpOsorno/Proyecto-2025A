@@ -10,7 +10,7 @@ from src.funcs.system import (
     generar_particiones,
     generar_subsistemas,
 )
-from models.base.manager import Manager
+from controllers.manager import Manager
 from src.models.base.sia import SIA
 from src.models.core.system import System
 from src.models.core.solution import Solution

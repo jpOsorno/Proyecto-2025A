@@ -10,6 +10,7 @@ class Aplication:
 
     def __init__(self) -> None:
         self.pagina_red_muestra: str = "A"
+        self.semilla_numpy = 73
         self.notacion: str = Notation.LIL_ENDIAN.value
         self.modo_estados = ACTIVOS
         self.distancia_metrica = MetricDistance.EMD_EFECTO.value
