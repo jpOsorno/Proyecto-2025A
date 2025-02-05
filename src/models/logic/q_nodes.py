@@ -14,7 +14,6 @@ from src.constants.base import (
     INFTY_POS,
     INT_ONE,
     LAST_IDX,
-    NEQ_SYM,
 )
 
 
@@ -103,6 +102,9 @@ class QNodes(SIA):
         self.memoria_delta = dict()
         self.memoria_particiones = dict()
 
+        self.idx_alcance: np.ndarray
+        self.idx_mecanismo: np.ndarray
+
         self.logger = setup_logger("q_strat")
 
     # @profile(context={"type": "q_analysis"})
@@ -114,6 +116,10 @@ class QNodes(SIA):
 
         self.m = len(self.sia_subsistema.indices_ncubos)
         self.n = len(self.sia_subsistema.dims_ncubos)
+
+        self.idx_alcance = self.sia_subsistema.indices_ncubos
+        self.idx_mecanismo = self.sia_subsistema.dims_ncubos
+
         self.tiempos = (
             np.zeros(self.n, dtype=np.int8),
             np.zeros(self.m, dtype=np.int8),
@@ -290,12 +296,24 @@ class QNodes(SIA):
         emd_delta = INFTY_NEG
 
         if isinstance(deltas, tuple):
-            d_tiempo, d_indice = deltas
-            tiempos[d_tiempo][d_indice] = ACTIVOS
+            d_tiempo, o_indice = deltas
+
+            d_indice_local = (
+                np.where(self.idx_alcance == o_indice)
+                if d_tiempo
+                else np.where(self.idx_mecanismo == o_indice)
+            )[0][0]
+
+            tiempos[d_tiempo][d_indice_local] = ACTIVOS
         else:
             for delta in deltas:
-                d_tiempo, d_indice = delta
-                tiempos[d_tiempo][d_indice] = ACTIVOS
+                d_tiempo, o_indice = delta
+                d_indice_local = (
+                    np.where(self.idx_alcance == o_indice)
+                    if d_tiempo
+                    else np.where(self.idx_mecanismo == o_indice)
+                )[0][0]
+                tiempos[d_tiempo][d_indice_local] = ACTIVOS
 
         if tuple(deltas) in self.memoria_delta:
             emd_delta, vector_delta_marginal = self.memoria_delta[tuple(deltas)]
@@ -323,11 +341,23 @@ class QNodes(SIA):
         for omega in omegas:
             if isinstance(omega, list):
                 for omg in omega:
-                    o_time, o_index = omg
-                    tiempos[o_time][o_index] = ACTIVOS
+                    o_tiempo, o_indice = omg
+
+                    o_indice_local = (
+                        np.where(self.idx_alcance == o_indice)
+                        if o_tiempo
+                        else np.where(self.idx_mecanismo == o_indice)
+                    )[0][0]
+                    tiempos[o_tiempo][o_indice_local] = ACTIVOS
             else:
-                o_time, o_index = omega
-                tiempos[o_time][o_index] = ACTIVOS
+                o_tiempo, o_indice = omega
+
+                o_indice_local = (
+                    np.where(self.idx_alcance == o_indice)
+                    if o_tiempo
+                    else np.where(self.idx_mecanismo == o_indice)
+                )[0][0]
+                tiempos[o_tiempo][o_indice_local] = ACTIVOS
 
         copia_union = self.sia_subsistema
 
