@@ -108,10 +108,11 @@ classDiagram
     class QNodes{
         +int m
         +int n
-        +tuple times
-        +list labels
+        +tuple tiempos
+        +list etiquetas
         +set vertices
-        +dict memory
+        +dict memoria_delta
+        +dict memoria_particiones
         +aplicar_estrategia(conditions, purview, mechanism)
         +algorithm(vertices: list) None
         +funcion_submodular(deltas, omegas) None
