@@ -50,13 +50,11 @@ Guía de Configuración del Entorno con UV y VSCode
 
 4. ✅ Verificación Exitosa
    ✔️ Sin errores en terminal
-
    ✔️ Carpeta proyecto_2025a.egg-info creada
-
    ✔️ Posibilidad de importar dependencias desde Python
 
 🔥 Notas Críticas
-   - Usar siempre PowerShell como terminal predeterminada
+   - Procura usar la PowerShell como terminal predeterminada (o Bash)
    - Activar entorno virtual antes de cualquier operación
    - La carpeta proyecto_2025a.egg-info es esencial - incluir en .gitignore
 
