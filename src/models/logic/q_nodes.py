@@ -101,21 +101,9 @@ class QNodes(SIA):
         self.labels = [tuple(s.lower() for s in ABECEDARY), ABECEDARY]
         self.vertices: set[tuple]
         self.individual_memory = dict()
+        self.partition_memory = dict()
 
         self.logger = get_logger("q_analysis")
-
-    def prueba_marginal(self, conditions, purview, mechansim):
-        self.sia_preparar_subsistema(conditions, purview, mechansim)
-
-        part_t1 = np.array([])
-        part_t0 = np.array([1, 0])
-
-        part = self.sia_subsistema.bipartir(part_t1, part_t0)
-        dist_part = part.distribucion_marginal()
-
-        self.logger.warn(self.sia_subsistema)
-        self.logger.warn(part)
-        self.logger.warn(dist_part)
 
     # @profile(context={"type": "Q_analysis"})
     def aplicar_estrategia(self, conditions, purview, mechansim):
@@ -170,7 +158,7 @@ class QNodes(SIA):
         deltas_ciclo = deltas_origen
         self.logger.debug(omegas_ciclo, deltas_ciclo)
 
-        particiones_candidatas = []
+        # particiones_candidatas = []
 
         # Se iteran dos veces menos obviando las iteraciones donde no hay particiones y cuando quedarían seleccionados todas las particiones.
         for i in range(len(vertices_fase) - 2):
@@ -198,15 +186,10 @@ class QNodes(SIA):
                     self.logger.warn(f"\n{'-'*40}{k=}")
                     self.logger.debug("ITER calculando cada delta")
 
-                    # if tuple(deltas_ciclo[k]) in self.memory[tuple(deltas_ciclo[k])]:
-                    #     # parte memoizada >> Funciona internamente, necesitamos calcular la unión
-                    #     iter_emd = self.memory[tuple(deltas_ciclo[k])]
-                    # else:
-                    #     iter_emd = self.funcion_submodular(
-                    #         deltas_ciclo[k], omegas_ciclo
-                    #     )
-                    #     self.memory[tuple(deltas_ciclo[k])] = iter_emd
-                    iter_emd = self.funcion_submodular(deltas_ciclo[k], omegas_ciclo)
+                    comp_emd, ind_emd = self.funcion_submodular(
+                        deltas_ciclo[k], omegas_ciclo
+                    )
+                    iter_emd = comp_emd - ind_emd
 
                     self.logger.debug(f"local: {iter_emd}, global: {local_min_emd}")
                     if iter_emd < local_min_emd:
@@ -233,7 +216,7 @@ class QNodes(SIA):
 
             if i == 0:
                 # Añadimos la primera partición, un único elemento
-                particiones_candidatas.append(deltas_ciclo)
+                self.partition_memory[tuple(deltas_ciclo)]
 
             last_pair = (
                 [omegas_ciclo[LAST_IDX]]
@@ -259,26 +242,6 @@ class QNodes(SIA):
         self.logger.warn(
             f"\nGrupos partición obtenidos durante ejecucion:\n{(particiones_candidatas)=}"
         )
-        # Esta parte no debería existir u optimizarse pues ya deben estar guardados en memoria
-        # minimal_emd_global = INFTY_POS
-        # for partition in particiones_candidatas:
-        #     emd_particion = INFTY_POS
-        #     if tuple(partition) in self.individual_memory:
-        #         emd_particion = self.individual_memory[tuple(partition)]
-
-        #     if emd_particion < minimal_emd_global:
-        #         minimal_emd_global = emd_particion
-        #     times = np.copy(self.times)
-        #     for p in particion:
-        #         p_time, p_index = p
-        #         times[p_time][p_index] = ACTIVOS
-        #     subsys = self.sia_subsistema
-        #     biparticion = subsys.bipartir(times[EFECTO], times[ACTUAL])
-        #     vector = biparticion.distribucion_marginal()
-        #     emd_particion = emd_efecto(vector, self.sia_dists_marginales)
-
-        #     self.individual_memory[tuple(particion)] = emd_particion
-
         self.logger.warn(f"{self.individual_memory=}")
 
         return min(self.individual_memory, key=lambda k: self.individual_memory[k])
@@ -291,7 +254,7 @@ class QNodes(SIA):
         times = np.copy(self.times)
         individual_emd = INFTY_NEG
 
-        self.logger.debug(f"{deltas=}")
+        # self.logger.debug(f"{deltas=}")
 
         # creamos la partición del individual
         if isinstance(deltas, tuple):
@@ -307,7 +270,7 @@ class QNodes(SIA):
         else:
             individual = self.sia_subsistema
 
-            self.logger.info(f"{times[EFECTO], times[ACTUAL]=}")
+            # self.logger.info(f"{times[EFECTO], times[ACTUAL]=}")
 
             dims_efecto_ind = tuple(
                 idx for idx, bit in enumerate(times[EFECTO]) if bit == INT_ONE
@@ -325,14 +288,14 @@ class QNodes(SIA):
 
             self.individual_memory[tuple(deltas)] = individual_emd
 
-            self.logger.debug(f"{self.sia_dists_marginales=}")
-            self.logger.debug(f"{indivector_marginal=}")
+            # self.logger.debug(f"{self.sia_dists_marginales=}")
+            # self.logger.debug(f"{indivector_marginal=}")
 
             # memoizamos el individuo
-            self.logger.info(f"{individual_emd}")
+            # self.logger.info(f"{individual_emd}")
 
-            self.logger.info("ind_part")
-            self.logger.info(f"{ind_part}")
+            # self.logger.info("ind_part")
+            # self.logger.info(f"{ind_part}")
 
         # Luego lo hacemos para los omegas
         for omega in omegas:
@@ -360,20 +323,20 @@ class QNodes(SIA):
         comvector_marginal = comb_part.distribucion_marginal()
         combinada_emd = emd_efecto(comvector_marginal, self.sia_dists_marginales)
 
-        self.logger.debug(f"{omegas=}")
+        # self.logger.debug(f"{omegas=}")
 
-        self.logger.info(f"{times[EFECTO], times[ACTUAL]=}")
-        self.logger.info("comb_part")
-        self.logger.info(f"{comb_part}")
+        # self.logger.info(f"{times[EFECTO], times[ACTUAL]=}")
+        # self.logger.info("comb_part")
+        # self.logger.info(f"{comb_part}")
 
-        self.logger.debug(f"{self.sia_dists_marginales=}")
-        self.logger.debug(f"{comvector_marginal=}")
+        # self.logger.debug(f"{self.sia_dists_marginales=}")
+        # self.logger.debug(f"{comvector_marginal=}")
 
-        self.logger.debug(
-            f"{combinada_emd - individual_emd}={combinada_emd}-{individual_emd}"
-        )
+        # self.logger.debug(
+        #     f"{combinada_emd - individual_emd}={combinada_emd}-{individual_emd}"
+        # )
 
-        return combinada_emd - individual_emd
+        return combinada_emd, individual_emd
 
     def view_solution(self, mip: tuple[tuple[int, int]]):
         times = ([], [])

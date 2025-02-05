@@ -17,5 +17,4 @@ def start_up():
 
     analizador_q = QNodes(sys_config)
     sia_uno = analizador_q.aplicar_estrategia(condiciones, alcance, mechanismo)
-    # sia_uno = analizador_q.prueba_marginal(condiciones, alcance, mechanismo)
     print(sia_uno)
