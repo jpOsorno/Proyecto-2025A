@@ -31,11 +31,11 @@ class Phi(SIA):
 
     def __init__(self, config: Manager) -> None:
         super().__init__(config)
-        self.logger = setup_logger("bruteforce_analysis")
-        self.debug_observer = DebugObserver()
         profiler_manager.start_session(
             f"NET{len(config.estado_inicial)}{config.pagina}"
         )
+        self.logger = setup_logger("bruteforce_analysis")
+        self.debug_observer = DebugObserver()
 
     @profile(context={"type": "pyphi_analysis"})
     def aplicar_estrategia(self, condiciones: str, alcance: str, mecanismo: str):

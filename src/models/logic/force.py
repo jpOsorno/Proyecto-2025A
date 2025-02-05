@@ -39,11 +39,11 @@ class BruteForce(SIA):
 
     def __init__(self, config: Manager):
         super().__init__(config)
-        self.logger = setup_logger("bruteforce_analysis")
-        self.debug_observer = DebugObserver()
         profiler_manager.start_session(
             f"NET{len(config.estado_inicial)}{config.pagina}"
         )
+        self.logger = setup_logger("bruteforce_analysis")
+        self.debug_observer = DebugObserver()
         self.distancia_metrica: Callable = seleccionar_metrica(
             aplicacion.distancia_metrica
         )

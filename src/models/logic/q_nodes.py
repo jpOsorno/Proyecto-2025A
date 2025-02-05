@@ -1,5 +1,6 @@
 import numpy as np
-from src.funcs.base import emd_efecto, setup_logger, ABECEDARY
+from src.funcs.base import emd_efecto, ABECEDARY
+from src.middlewares.profile import profile, profiler_manager
 from src.funcs.format import fmt_biparte_q, fmt_parte_q
 from src.middlewares.slogger import get_logger
 from controllers.manager import Manager
@@ -14,7 +15,6 @@ from src.constants.base import (
     INFTY_POS,
     INT_ONE,
     LAST_IDX,
-    NEQ_SYM,
 )
 
 
@@ -95,6 +95,9 @@ class QNodes(SIA):
 
     def __init__(self, config: Manager):
         super().__init__(config)
+        profiler_manager.start_session(
+            f"NET{len(config.estado_inicial)}{config.pagina}"
+        )
         self.m: int
         self.n: int
         self.times: tuple[np.ndarray, np.ndarray]
@@ -103,22 +106,7 @@ class QNodes(SIA):
         self.individual_memory = dict()
         self.partition_memory = dict()
 
-        self.logger = get_logger("q_analysis")
-
-    def prueba_marginal(self, conditions, purview, mechansim):
-        self.sia_preparar_subsistema(conditions, purview, mechansim)
-
-        part_t1 = np.array([])
-        part_t0 = np.array([1, 0])
-
-        part = self.sia_subsistema.bipartir(part_t1, part_t0)
-        dist_part = part.distribucion_marginal()
-
-        self.logger.warn(self.sia_subsistema)
-        self.logger.warn(part)
-        self.logger.warn(dist_part)
-
-    # @profile(context={"type": "Q_analysis"})
+    # @profile(context={"type": "q_analysis"})
     def aplicar_estrategia(self, conditions, purview, mechansim):
         self.sia_preparar_subsistema(conditions, purview, mechansim)
 
@@ -134,10 +122,7 @@ class QNodes(SIA):
         self.vertices = set(mech + purv)
         mip = self.algorithm(vertices)
 
-        fmt_mip = fmt_biparte_q(list(mip), list(set(vertices) - set(mip)))
-
-        # print(f"{list(mip), list(set(mip) - set(vertices))=}")
-        # print(f"{fmt_mip=}")
+        fmt_mip = fmt_biparte_q(list(mip), self.nodes_complement(mip))
 
         return Solution(
             estrategia="Q-Nodes",
@@ -148,27 +133,56 @@ class QNodes(SIA):
         )
 
     def algorithm(self, vertices: list[tuple[int, int]]):
-        # Acá puse como una macrológica antes de empezar a implementar #
-        #    vertices, self.m, self.n)
-        # tomar el elemento inicial para omegas
-        # Paralelizar inicialmente en CPU luego en GPU
-        # tensorflow hace uso de paralelizaciones en base a la arquitectura del ordenador
-        # memoria + tiempo + htop
-        # iterar por cada elemento en deltas
-        #   Función que itere sobre los deltas restantes y retorne el mínimo. El detalle sobre este método es que (obviando memoización) omega
+        """
+        Implementa el algoritmo Q para encontrar la partición óptima de un sistema que minimiza la pérdida de información, basándose en principios de submodularidad dentro de la teoría de lainformación.
 
-        # generar la particion tanto en delta individual como en omegas
+        El algoritmo opera sobre un conjunto de vértices que representan nodos en diferentes tiempos del sistema (presente y futuro). La idea fundamental es construir incrementalmente grupos de nodos que, cuando se particionan, producen la menor pérdida posible de información en el sistema.
 
-        # el valor de los tensor y emd se resta entre estos y se genera una emd_delta
+        Proceso Principal:
+        -----------------
+        El algoritmo comienza estableciendo dos conjuntos fundamentales: omega (W) y delta.
+        Omega siempre inicia con el primer vértice del sistema, mientras que delta contiene todos los vértices restantes. Esta decisión no es arbitraria - al comenzar con un
+        solo elemento en omega, podemos construir grupos de manera incremental evaluando cómo cada adición afecta la pérdida de información.
 
-        # tras iterar todos los deltas escogemos el mínimo y lo añadimos a omegas
+        La ejecución se desarrolla en fases, ciclos e iteraciones, donde cada fase representa un nivel diferente y conlleva a la formación de una partición candidata, cada ciclo representa un incremento de elementos al conjunto W y cada iteración determina al final cuál es el mejor elemento/cambio/delta para añadir en W.
 
-        # tras que omegas sea del tamaño vertices - 1 paramos y tomamos el último elemento en omegas y deltas para agruparlo en vertices
+        1. Formación Incremental de Grupos:
+        El algoritmo mantiene un conjunto omega que crece gradualmente en cada j-iteración. En cada paso, evalúa todos los deltas restantes para encontrar cuál, al unirse con omega produce la menor pérdida de información. Este proceso utiliza la función submodular para calcular la diferencia entre la EMD (Earth Mover's Distance) de la combinación y la EMD individual del delta evaluado.
 
-        # repetimos el mismo algoritmo teniendo este grupo (llamaremos a los pares candidatos grupos candidatos porque en nada dejan de ser pares y tienen más de 2 elementos, je)
+        2. Evaluación de deltas:
+        Para cada delta candidato el algoritmo:
+        - Calcula su EMD individual si no está en memoria.
+        - Calcula la EMD de su combinación con el conjunto omega actual
+        - Determina la diferencia entre estas EMDs (el "costo" de la combinación)
+        El delta que produce el menor costo se selecciona y se añade a omega.
 
-        # Acá en adelante sí empecé a implementar la lógica.
+        3. Formación de Nuevos Grupos:
+        Al final de cada fase cuando omega crezca lo suficiente, el algoritmo:
+        - Toma los últimos elementos de omega y delta (par candidato).
+        - Los combina en un nuevo grupo
+        - Actualiza la lista de vértices para la siguiente fase
+        Este proceso de agrupamiento permite que el algoritmo construya particiones
+        cada vez más complejas y reutilice estos "pares candidatos" para particiones en conjunto.
 
+        Optimización y Memoria:
+        ----------------------
+        El algoritmo utiliza dos estructuras de memoria clave:
+        - individual_memory: Almacena las EMDs y distribuciones de nodos individuales, evitando recálculos muy costosos.
+        - partition_memory: Guarda las EMDs y distribuciones de las particiones completas, permitiendo comparar diferentes combinaciones de grupos teniendo en cuenta que su valor real está asociado al valor individual de su formación delta.
+
+        La memoización es relevante puesto muchos cálculos de EMD son computacionalmente costosos y se repiten durante la ejecución del algoritmo.
+
+        Resultado:
+        ---------------
+        Al terminar todas las fases, el algoritmo selecciona la partición que produjo la menor EMD global, representando la división del sistema que mejor preserva su información causal.
+
+        Args:
+            vertices (list[tuple[int, int]]): Lista de vértices donde cada uno es una
+                tupla (tiempo, índice). tiempo=0 para presente (t_0), tiempo=1 para futuro (t_1).
+
+        Returns:
+            tuple[float, tuple[tuple[int, int], ...]]: El valor de pérdida en la primera posición, asociado con la partición óptima encontrada, identificada por la clave en partition_memory que produce la menor EMD.
+        """
         omegas_origen = np.array([vertices[0]])
         deltas_origen = np.array(vertices[1:])
 
@@ -176,46 +190,24 @@ class QNodes(SIA):
 
         omegas_ciclo = omegas_origen
         deltas_ciclo = deltas_origen
-        self.logger.debug(omegas_ciclo, deltas_ciclo)
 
-        # particiones_candidatas = []
-
-        # Se iteran dos veces menos obviando las iteraciones donde no hay particiones y cuando quedarían seleccionados todas las particiones.
         for i in range(len(vertices_fase) - 2):
-            self.logger.warn(f"\n{'≡' * 50}{i=}")
-            self.logger.debug(
-                f"FASE con nuevo grupo formado (si i{NEQ_SYM}0):\n\t{vertices_fase}"
-            )
-
-            # asignar de nivel anterior a elementos de omegas
             omegas_ciclo = [vertices_fase[0]]
             deltas_ciclo = vertices_fase[1:]
 
-            self.logger.debug(f"fase inicia con W: {omegas_ciclo}")
             partition_emd = INFTY_POS
 
             for j in range(len(deltas_ciclo) - 1):
-                self.logger.warn(f"\n{'='*45}{j=}")
-                self.logger.debug(f"CICLO W crece: {omegas_ciclo}")
-
-                # selección primer elemento de vertices
-
                 local_min_emd = 1e5
-                iter_mip: tuple[int, int] | list[tuple[int, int]]
                 index_mip: int
                 for k in range(len(deltas_ciclo)):
-                    self.logger.warn(f"\n{'-'*40}{k=}")
-                    self.logger.debug("ITER calculando cada delta")
-
                     comp_emd, ind_emd, ind_dist = self.funcion_submodular(
                         deltas_ciclo[k], omegas_ciclo
                     )
                     iter_emd = comp_emd - ind_emd
 
-                    self.logger.debug(f"local: {iter_emd}, global: {local_min_emd}")
                     if iter_emd < local_min_emd:
                         local_min_emd = iter_emd
-                        iter_mip = deltas_ciclo[k]
                         index_mip = k
 
                         partition_emd = ind_emd
@@ -223,24 +215,11 @@ class QNodes(SIA):
                     else:
                         partition_emd = ind_emd
                         partition_dist = ind_dist
-
                     ...
 
                 omegas_ciclo.append(deltas_ciclo[index_mip])
-                self.logger.debug(
-                    f"\nCICLO Minimo delta hallado:\n\t{deltas_ciclo[index_mip]=}"
-                )
-                self.logger.debug("\tAñadir a ciclo omega. Quitándolo de deltas.")
                 deltas_ciclo.pop(index_mip)
-
-                # print(f"{iter_mip=}")
                 ...
-
-            # El detalle es que estas uniones de la ultima y penultima parte se encuentran de la memoización en la generación de las particiones individuales, puesto en algún punto se va a evaluar un delta que será la unión de estos dos en la siguiente iteración.
-            # #    penultimo_mip, penultima_emd)
-
-            self.logger.debug("Añadir nueva partición entre ultimos de omega y delta")
-            self.logger.debug(f"{omegas_ciclo, deltas_ciclo=}")
 
             self.partition_memory[
                 tuple(
@@ -257,38 +236,57 @@ class QNodes(SIA):
             ) + (
                 deltas_ciclo[LAST_IDX]
                 if isinstance(deltas_ciclo[LAST_IDX], list)
-                else deltas_ciclo  # adición de los dos últimos elementos en uno sólo.
+                else deltas_ciclo
             )
-
-            # self.partition_memory[tuple(last_pair)] = partition_emd
-
-            self.logger.debug(f"{last_pair=}")
-
-            omegas_ciclo.pop()  # quitar el último elemento pues está en el par
+            omegas_ciclo.pop()
             omegas_ciclo.append(last_pair)
 
-            # vertices_fase # cambiarlos y ponerles con el nuevo grupo formado, así cuando vuelva a la fase se repetirá todo igual pero con el grupo en cuenta
             vertices_fase = omegas_ciclo
             ...
 
-        self.logger.warn(
-            f"\nGrupos partición obtenidos durante ejecucion:\n{(self.partition_memory)=}"
-        )
-        # self.logger.warn(f"{self.individual_memory=}")
-
         return min(self.partition_memory, key=lambda k: self.partition_memory[k][0])
-        ...
 
     def funcion_submodular(
         self, deltas: tuple | list[tuple], omegas: list[tuple | list[tuple]]
     ):
-        # Acá lo que se hace es a partir de los elementos que estén en el conjunto omega (W) y delta se creen en esencia, las particiones.
+        """
+        Evalúa el impacto de combinar el conjunto de nodos individual delta y su agrupación con el conjunto omega, calculando la diferencia entre EMD (Earth Mover's Distance) de las configuraciones, en conclusión los nodos delta evaluados individualmente y su combinación con el conjunto omega.
+
+        El proceso se realiza en dos fases principales:
+
+        1. Evaluación Individual:
+           - Crea una copia del estado temporal del subsistema.
+           - Activa los nodos delta en su tiempo correspondiente (presente/futuro).
+           - Si el delta ya fue evaluado antes, recupera su EMD y distribución marginal de memoria
+           - Si no, ha de:
+             * Identificar dimensiones activas en presente y futuro.
+             * Realiza bipartición del subsistema con esas dimensiones.
+             * Calcular la distribución marginal y EMD respecto al subsistema.
+             * Guarda resultados en memoria para seguro un uso futuro.
+
+        2. Evaluación Combinada:
+           - Sobre la misma copia temporal, activa también los nodos omega.
+           - Calcula dimensiones activas totales (delta + omega).
+           - Realiza bipartición del subsistema completo.
+           - Obtiene EMD de la combinación.
+
+        Args:
+            deltas: Un nodo individual (tupla) o grupo de nodos (lista de tuplas)
+                   donde cada tupla está identificada por su (tiempo, índice), sea el tiempo t_0 identificado como 0, t_1 como 1 y, el índice hace referencia a las variables/dimensiones habilitadas para operaciones de substracción/marginalización sobre el subsistema, tal que genere la partición.
+            omegas: Lista de nodos ya agrupados, puede contener tuplas individuales
+                   o listas de tuplas para grupos formados por los pares candidatos o más uniones entre sí (grupos candidatos).
+
+        Returns:
+            tuple: (
+                EMD de la combinación omega y delta,
+                EMD del delta individual,
+                Distribución marginal del delta individual
+            )
+            Esto lo hice así para hacer almacenamiento externo de la emd individual y su distribución marginal en las particiones candidatas.
+        """
         times = np.copy(self.times)
         individual_emd = INFTY_NEG
 
-        # self.logger.debug(f"{deltas=}")
-
-        # creamos la partición del individual
         if isinstance(deltas, tuple):
             d_time, d_index = deltas
             times[d_time][d_index] = ACTIVOS
@@ -301,8 +299,6 @@ class QNodes(SIA):
             individual_emd, indivector_marginal = self.individual_memory[tuple(deltas)]
         else:
             individual = self.sia_subsistema
-
-            # self.logger.info(f"{times[EFECTO], times[ACTUAL]=}")
 
             dims_efecto_ind = tuple(
                 idx for idx, bit in enumerate(times[EFECTO]) if bit == INT_ONE
@@ -320,16 +316,6 @@ class QNodes(SIA):
 
             self.individual_memory[tuple(deltas)] = individual_emd, indivector_marginal
 
-            # self.logger.debug(f"{self.sia_dists_marginales=}")
-            # self.logger.debug(f"{indivector_marginal=}")
-
-            # memoizamos el individuo
-            # self.logger.info(f"{individual_emd}")
-
-            # self.logger.info("ind_part")
-            # self.logger.info(f"{ind_part}")
-
-        # Luego lo hacemos para los omegas
         for omega in omegas:
             if isinstance(omega, list):
                 for omg in omega:
@@ -355,50 +341,7 @@ class QNodes(SIA):
         comvector_marginal = comb_part.distribucion_marginal()
         combinada_emd = emd_efecto(comvector_marginal, self.sia_dists_marginales)
 
-        # self.logger.debug(f"{omegas=}")
-
-        # self.logger.info(f"{times[EFECTO], times[ACTUAL]=}")
-        # self.logger.info("comb_part")
-        # self.logger.info(f"{comb_part}")
-
-        # self.logger.debug(f"{self.sia_dists_marginales=}")
-        # self.logger.debug(f"{comvector_marginal=}")
-
-        # self.logger.debug(
-        #     f"{combinada_emd - individual_emd}={combinada_emd}-{individual_emd}"
-        # )
-
         return combinada_emd, individual_emd, indivector_marginal
-
-    def view_solution(self, mip: tuple[tuple[int, int]]):
-        times = ([], [])
-        complement = self.vertices - set(mip)
-        for part_prim in mip:
-            time, index = part_prim
-            letter = self.labels[time][index]
-            # ponemos en la parte primal (1)
-            times[0].append(letter)
-
-        for part_dual in complement:
-            time, index = part_dual
-            letter = self.labels[time][index]
-            # ponemos en la parte dual (1)
-            times[1].append(letter)
-
-        # self.logger.debug(f"{times, self.memory[mip]=}")
-        # self.logger.debug(f"{mip=}")
-        biparticion_fmt = fmt_biparte_q(times[0], times[1])
-        return biparticion_fmt
-        print(f"{mip=}")
 
     def nodes_complement(self, nodes: list[tuple[int, int]]):
         return list(set(self.vertices) - set(nodes))
-
-
-""" 
-Planteamiento de formar los pares/grupos-candidatos no con listas sino con matriz de adyacencia?
-  0  1  2
-0[x][ ][x]
-1[x][ ][x]
-2[x][ ][x]
-"""
