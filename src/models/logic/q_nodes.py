@@ -14,7 +14,6 @@ from src.constants.base import (
     INFTY_POS,
     INT_ONE,
     LAST_IDX,
-    NEQ_SYM,
 )
 
 

@@ -191,7 +191,7 @@ class Solution:
             motor.setProperty("rate", 150)
             motor.setProperty("volume", 0.9)
 
-            mensaje = "Solución encontrada. " + (
+            mensaje = f"Solución encontrada con {self.estrategia}." + (
                 f"El valor de fi es de {self.perdida:.2f}"
                 if self.perdida > 0
                 else "No hubo pérdida."
@@ -222,13 +222,11 @@ class Solution:
         trilinea = "≡" * 50
 
         def formatear_distribucion(dist: np.ndarray):
-            return (
-                "["
-                + " ".join(
-                    f"{Fore.RESET if x>0 else Fore.LIGHTBLACK_EX}{x:.4f}" for x in dist
-                )
-                + "]"
+            datos = " ".join(
+                f"{Fore.WHITE}{x:.4f}" if x > 0 else f"{Fore.LIGHTBLACK_EX}0."
+                for x in dist
             )
+            return f"[ {datos} ]"
 
         return f"""{Fore.CYAN}{bilinea}{Style.RESET_ALL}
 

@@ -1,8 +1,8 @@
-from models.logic.phi import Phi
-from models.logic.q_nodes import QNodes
 from src.controllers.manager import Manager
 
 from src.models.logic.force import BruteForce
+from models.logic.q_nodes import QNodes
+from models.logic.phi import Phi
 
 
 def start_up():
@@ -13,11 +13,15 @@ def start_up():
 
     ## Ejemplo de solución mediante fuerza bruta ##
 
-    analizador_fb = Phi(config_sistema)
-    print(analizador_fb.aplicar_estrategia("11111", "01101", "10110"))
+    condiciones = "10000"
+    alcances = "10000"
+    mecanismos = "10000"
+
+    # analizador_fb = Phi(config_sistema)
+    # print(analizador_fb.aplicar_estrategia(condiciones, alcances, mecanismos))
 
     analizador_fb = BruteForce(config_sistema)
-    print(analizador_fb.aplicar_estrategia("11111", "01101", "10110"))
+    print(analizador_fb.aplicar_estrategia(condiciones, alcances, mecanismos))
 
-    analizador_fb = QNodes(config_sistema)
-    print(analizador_fb.aplicar_estrategia("11111", "01101", "10110"))
+    # analizador_fb = QNodes(config_sistema)
+    # print(analizador_fb.aplicar_estrategia(condiciones, alcances, mecanismos))
