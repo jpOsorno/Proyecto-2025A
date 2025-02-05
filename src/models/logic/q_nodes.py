@@ -134,11 +134,17 @@ class QNodes(SIA):
         self.vertices = set(mech + purv)
         mip = self.algorithm(vertices)
 
-        # self.view_solution(mip)
-        return (self.partition_memory[mip],)
+        fmt_mip = fmt_biparte_q(list(mip), list(set(mip) - set(vertices)))
 
-        # Solution(
-        #     )
+        print(f"{fmt_mip=}")
+
+        return Solution(
+            estrategia="Q-Nodes",
+            perdida=self.partition_memory[mip][0],
+            distribucion_subsistema=self.sia_dists_marginales,
+            distribucion_particion=self.partition_memory[mip][1],
+            particion=fmt_mip,
+        )
 
     def algorithm(self, vertices: list[tuple[int, int]]):
         # Acá puse como una macrológica antes de empezar a implementar #
@@ -200,7 +206,7 @@ class QNodes(SIA):
                     self.logger.warn(f"\n{'-'*40}{k=}")
                     self.logger.debug("ITER calculando cada delta")
 
-                    comp_emd, ind_emd = self.funcion_submodular(
+                    comp_emd, ind_emd, ind_dist = self.funcion_submodular(
                         deltas_ciclo[k], omegas_ciclo
                     )
                     iter_emd = comp_emd - ind_emd
@@ -210,9 +216,12 @@ class QNodes(SIA):
                         local_min_emd = iter_emd
                         iter_mip = deltas_ciclo[k]
                         index_mip = k
+
                         partition_emd = ind_emd
+                        partition_dist = ind_dist
                     else:
                         partition_emd = ind_emd
+                        partition_dist = ind_dist
 
                     ...
 
@@ -238,7 +247,7 @@ class QNodes(SIA):
                     if isinstance(deltas_ciclo[LAST_IDX], list)
                     else deltas_ciclo
                 )
-            ] = partition_emd
+            ] = partition_emd, partition_dist
 
             last_pair = (
                 [omegas_ciclo[LAST_IDX]]
@@ -264,9 +273,9 @@ class QNodes(SIA):
         self.logger.warn(
             f"\nGrupos partición obtenidos durante ejecucion:\n{(self.partition_memory)=}"
         )
-        self.logger.warn(f"{self.individual_memory=}")
+        # self.logger.warn(f"{self.individual_memory=}")
 
-        return min(self.partition_memory, key=lambda k: self.partition_memory[k])
+        return min(self.partition_memory, key=lambda k: self.partition_memory[k][0])
         ...
 
     def funcion_submodular(
@@ -288,7 +297,7 @@ class QNodes(SIA):
                 times[d_time][d_index] = ACTIVOS
 
         if tuple(deltas) in self.individual_memory:
-            individual_emd = self.individual_memory[tuple(deltas)]
+            individual_emd, indivector_marginal = self.individual_memory[tuple(deltas)]
         else:
             individual = self.sia_subsistema
 
@@ -308,7 +317,7 @@ class QNodes(SIA):
             indivector_marginal = ind_part.distribucion_marginal()
             individual_emd = emd_efecto(indivector_marginal, self.sia_dists_marginales)
 
-            self.individual_memory[tuple(deltas)] = individual_emd
+            self.individual_memory[tuple(deltas)] = individual_emd, indivector_marginal
 
             # self.logger.debug(f"{self.sia_dists_marginales=}")
             # self.logger.debug(f"{indivector_marginal=}")
@@ -358,7 +367,7 @@ class QNodes(SIA):
         #     f"{combinada_emd - individual_emd}={combinada_emd}-{individual_emd}"
         # )
 
-        return combinada_emd, individual_emd
+        return combinada_emd, individual_emd, indivector_marginal
 
     def view_solution(self, mip: tuple[tuple[int, int]]):
         times = ([], [])
