@@ -134,9 +134,10 @@ class QNodes(SIA):
         self.vertices = set(mech + purv)
         mip = self.algorithm(vertices)
 
-        fmt_mip = fmt_biparte_q(list(mip), list(set(mip) - set(vertices)))
+        fmt_mip = fmt_biparte_q(list(mip), list(set(vertices) - set(mip)))
 
-        print(f"{fmt_mip=}")
+        # print(f"{list(mip), list(set(mip) - set(vertices))=}")
+        # print(f"{fmt_mip=}")
 
         return Solution(
             estrategia="Q-Nodes",
@@ -232,7 +233,7 @@ class QNodes(SIA):
                 self.logger.debug("\tAñadir a ciclo omega. Quitándolo de deltas.")
                 deltas_ciclo.pop(index_mip)
 
-                print(f"{iter_mip=}")
+                # print(f"{iter_mip=}")
                 ...
 
             # El detalle es que estas uniones de la ultima y penultima parte se encuentran de la memoización en la generación de las particiones individuales, puesto en algún punto se va a evaluar un delta que será la unión de estos dos en la siguiente iteración.
@@ -388,7 +389,7 @@ class QNodes(SIA):
         # self.logger.debug(f"{mip=}")
         biparticion_fmt = fmt_biparte_q(times[0], times[1])
         return biparticion_fmt
-        # print(f"{mip=}")
+        print(f"{mip=}")
 
     def nodes_complement(self, nodes: list[tuple[int, int]]):
         return list(set(self.vertices) - set(nodes))
