@@ -3,13 +3,13 @@ from src.models.enums.distance import MetricDistance
 from src.models.enums.notation import Notation
 
 
-class Aplication:
+class Application:
     """
     La clase aplicación es un singleton utilizado para la obtención y configuración de parámetros.
     """
 
     def __init__(self) -> None:
-        self.pagina_red_muestra: str = "A"
+        self.pagina_sample_network: str = "A"
         self.semilla_numpy = 73
         self.notacion: str = Notation.LIL_ENDIAN.value
         self.modo_estados = ACTIVOS
@@ -28,4 +28,4 @@ class Aplication:
         self.modo_estados = INACTIVOS
 
 
-aplicacion = Aplication()
+aplicacion = Application()

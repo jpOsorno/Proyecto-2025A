@@ -1,11 +1,11 @@
 from dataclasses import dataclass
-import os
 from pathlib import Path
 import time
+import os
 
 import numpy as np
 
-from src.models.base.aplication import aplicacion
+from models.base.application import aplicacion
 from src.constants.base import (
     ABC_START,
     CSV_EXTENSION,
@@ -30,7 +30,7 @@ class Manager:
     """
 
     estado_inicial: str
-    pagina: str = aplicacion.pagina_red_muestra
+    pagina: str = aplicacion.pagina_sample_network
     ruta_base: Path = Path(SAMPLES_PATH)
     
 

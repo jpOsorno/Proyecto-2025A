@@ -18,7 +18,7 @@ from src.models.core.solution import Solution
 from src.middlewares.profile import profile, profiler_manager
 from src.middlewares.observer import DebugObserver
 
-from src.models.base.aplication import aplicacion
+from models.base.application import aplicacion
 from src.constants.base import ACTUAL, EFECTO
 
 

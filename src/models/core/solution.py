@@ -6,7 +6,7 @@ import numpy as np
 from threading import Thread
 from typing import Optional
 
-from src.models.base.aplication import aplicacion
+from models.base.application import aplicacion
 
 # Iniciar colorama
 init()

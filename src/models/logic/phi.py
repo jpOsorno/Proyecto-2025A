@@ -15,7 +15,7 @@ from pyphi.models.cuts import Bipartition, Part
 from src.middlewares.profile import profile, profiler_manager
 from src.models.core.solution import Solution
 
-from src.models.base.aplication import aplicacion
+from models.base.application import aplicacion
 
 from src.models.enums.distance import MetricDistance
 from src.constants.base import (

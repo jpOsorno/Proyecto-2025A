@@ -10,7 +10,7 @@ from src.constants.base import INT_ZERO
 from src.models.enums.distance import MetricDistance
 from src.models.enums.notation import Notation
 
-from src.models.base.aplication import aplicacion
+from models.base.application import aplicacion
 
 
 # @cache
