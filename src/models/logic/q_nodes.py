@@ -196,14 +196,15 @@ class QNodes(SIA):
                     self.logger.warn(f"\n{'-'*40}{k=}")
                     self.logger.debug("ITER calculando cada delta")
 
-                    if tuple(deltas_ciclo[k]) in self.memory[tuple(deltas_ciclo[k])]:
-                        # parte memoizada
-                        iter_emd = self.memory[tuple(deltas_ciclo[k])]
-                    else:
-                        iter_emd = self.funcion_submodular(
-                            deltas_ciclo[k], omegas_ciclo
-                        )
-                        self.memory[tuple(deltas_ciclo[k])] = iter_emd
+                    # if tuple(deltas_ciclo[k]) in self.memory[tuple(deltas_ciclo[k])]:
+                    #     # parte memoizada >> Funciona internamente, necesitamos calcular la unión
+                    #     iter_emd = self.memory[tuple(deltas_ciclo[k])]
+                    # else:
+                    #     iter_emd = self.funcion_submodular(
+                    #         deltas_ciclo[k], omegas_ciclo
+                    #     )
+                    #     self.memory[tuple(deltas_ciclo[k])] = iter_emd
+                    iter_emd = self.funcion_submodular(deltas_ciclo[k], omegas_ciclo)
 
                     self.logger.debug(f"local: {iter_emd}, global: {minimal_emd}")
                     if iter_emd < minimal_emd:
@@ -226,7 +227,7 @@ class QNodes(SIA):
             # #    penultimo_mip, penultima_emd)
 
             self.logger.debug("Añadir nueva partición entre ultimos de omega y delta")
-            self.logger.debug(f"{omegas_ciclo, deltas_ciclo}")
+            self.logger.debug(f"{omegas_ciclo, deltas_ciclo=}")
 
             if i == 0:
                 # Añadimos la primera partición, un único elemento
@@ -241,9 +242,10 @@ class QNodes(SIA):
                 if isinstance(deltas_ciclo[LAST_IDX], list)
                 else deltas_ciclo  # adición de los dos últimos elementos en uno sólo.
             )
+
             particiones_candidatas.append(last_pair)
 
-            self.logger.debug(last_pair)
+            self.logger.debug(f"{last_pair=}")
 
             omegas_ciclo.pop()  # quitar el último elemento pues está en el par
             omegas_ciclo.append(last_pair)
@@ -267,6 +269,8 @@ class QNodes(SIA):
             emd_particion = emd_efecto(vector, self.sia_dists_marginales)
 
             self.memory[tuple(particion)] = emd_particion
+
+        self.logger.warn(f"{self.memory=}")
 
         return min(self.memory, key=lambda k: self.memory[k])
         ...
