@@ -212,11 +212,8 @@ class QNodes(SIA):
                         emd_local = emd_iteracion
                         indice_mip = k
 
-                        emd_particion_candidata = emd_delta
-                        dist_particion_candidata = dist_marginal_delta
-                    else:
-                        emd_particion_candidata = emd_delta
-                        dist_particion_candidata = dist_marginal_delta
+                    emd_particion_candidata = emd_delta
+                    dist_particion_candidata = dist_marginal_delta
                     ...
 
                 omegas_ciclo.append(deltas_ciclo[indice_mip])
