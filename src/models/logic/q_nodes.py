@@ -105,6 +105,19 @@ class QNodes(SIA):
 
         self.logger = get_logger("q_analysis")
 
+    def prueba_marginal(self, conditions, purview, mechansim):
+        self.sia_preparar_subsistema(conditions, purview, mechansim)
+
+        part_t1 = np.array([])
+        part_t0 = np.array([1, 0])
+
+        part = self.sia_subsistema.bipartir(part_t1, part_t0)
+        dist_part = part.distribucion_marginal()
+
+        self.logger.warn(self.sia_subsistema)
+        self.logger.warn(part)
+        self.logger.warn(dist_part)
+
     # @profile(context={"type": "Q_analysis"})
     def aplicar_estrategia(self, conditions, purview, mechansim):
         self.sia_preparar_subsistema(conditions, purview, mechansim)
@@ -228,7 +241,7 @@ class QNodes(SIA):
                 else deltas_ciclo  # adición de los dos últimos elementos en uno sólo.
             )
 
-            particiones_candidatas.append(last_pair)
+            # particiones_candidatas.append(last_pair)
 
             self.logger.debug(f"{last_pair=}")
 
@@ -239,9 +252,9 @@ class QNodes(SIA):
             vertices_fase = omegas_ciclo
             ...
 
-        self.logger.warn(
-            f"\nGrupos partición obtenidos durante ejecucion:\n{(particiones_candidatas)=}"
-        )
+        # self.logger.warn(
+        #     f"\nGrupos partición obtenidos durante ejecucion:\n{(particiones_candidatas)=}"
+        # )
         self.logger.warn(f"{self.individual_memory=}")
 
         return min(self.individual_memory, key=lambda k: self.individual_memory[k])
