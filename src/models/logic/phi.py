@@ -17,13 +17,10 @@ from src.models.core.solution import Solution
 
 from src.models.base.aplication import aplicacion
 
-from src.constants.base import (
-    INT_ONE,
-    INT_ZERO,
-    STR_ONE,
-    VOID_STR,
-)
 from src.models.enums.distance import MetricDistance
+from src.constants.base import (
+    STR_ONE,
+)
 
 
 class Phi(SIA):

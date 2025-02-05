@@ -1,8 +1,7 @@
 import numpy as np
 from src.funcs.base import emd_efecto, ABECEDARY
-from src.middlewares.profile import profile, profiler_manager
-from src.funcs.format import fmt_biparte_q, fmt_parte_q
-from src.middlewares.slogger import get_logger
+from src.middlewares.profile import profiler_manager, profile
+from src.funcs.format import fmt_biparte_q
 from controllers.manager import Manager
 from src.models.base.sia import SIA
 
