@@ -107,8 +107,8 @@ class BruteForce(SIA):
             dual[bit].append(j)
 
         biparticion_formateada = fmt_biparticion(
-            [prim[EFECTO], dual[EFECTO]],
-            [prim[ACTUAL], dual[ACTUAL]],
+            [dual[EFECTO], prim[EFECTO]],
+            [dual[ACTUAL], prim[ACTUAL]],
         )
 
         return Solution(

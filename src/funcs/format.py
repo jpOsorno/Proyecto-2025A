@@ -3,12 +3,12 @@ from src.constants.base import VOID_STR
 
 
 def fmt_biparticion(
-    parte_one: list[tuple[int, ...], tuple[int, ...]],
-    parte_two: list[tuple[int, ...], tuple[int, ...]],
+    parte_uno: list[tuple[int, ...], tuple[int, ...]],
+    parte_dos: list[tuple[int, ...], tuple[int, ...]],
 ) -> str:
     # Extraer mecanismo y purview de cada parte
-    mech_p, pur_p = parte_one
-    mech_d, purv_d = parte_two
+    mech_p, pur_p = parte_uno
+    mech_d, purv_d = parte_dos
 
     # Convertir índices a letras o símbolo vacío si no hay elementos
     purv_prim = ",".join(ABECEDARY[j] for j in pur_p) if pur_p else VOID_STR
