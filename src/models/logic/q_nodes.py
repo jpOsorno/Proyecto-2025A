@@ -266,7 +266,7 @@ class QNodes(SIA):
         )
         self.logger.warn(f"{self.individual_memory=}")
 
-        return min(self.individual_memory, key=lambda k: self.partition_memory[k])
+        return min(self.partition_memory, key=lambda k: self.partition_memory[k])
         ...
 
     def funcion_submodular(
