@@ -85,8 +85,8 @@ class Phi(SIA):
         prim_mech, prim_purv = prim.mechanism, prim.purview
         dual_mech, dual_purv = dual.mechanism, dual.purview
         format = fmt_biparticion(
-            [dual_purv, dual_mech],
-            [prim_purv, prim_mech],
+            [dual_mech, dual_purv],
+            [prim_mech, prim_purv],
         )
 
         return Solution(

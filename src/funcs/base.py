@@ -6,11 +6,11 @@ import numpy as np
 from numpy.typing import NDArray
 from pyemd import emd
 
-from src.constants.base import INT_ZERO
 from src.models.enums.distance import MetricDistance
 from src.models.enums.notation import Notation
 
 from models.base.application import aplicacion
+from src.constants.base import ABC_START, INT_ZERO
 
 
 # @cache
@@ -18,7 +18,7 @@ def get_labels(n: int) -> tuple[str, ...]:
     def get_excel_column(n: int) -> str:
         if n <= 0:
             return ""
-        return get_excel_column((n - 1) // 26) + chr((n - 1) % 26 + ord("A"))
+        return get_excel_column((n - 1) // 26) + chr((n - 1) % 26 + ord(ABC_START))
 
     return tuple([get_excel_column(i) for i in range(1, n + 1)])
 
@@ -94,6 +94,7 @@ def reindexar(N: int):
 
 
 def seleccionar_subestado(subestado):
+    # posible in-deducción por acceso inverso
     notaciones = {
         Notation.BIG_ENDIAN.value: subestado,
         Notation.LIL_ENDIAN.value: subestado[::-1],
