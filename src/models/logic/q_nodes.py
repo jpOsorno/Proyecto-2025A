@@ -10,6 +10,8 @@ from src.constants.base import (
     ACTIVOS,
     EFECTO,
     ACTUAL,
+    INFTY_NEG,
+    INFTY_POS,
     INT_ONE,
     LAST_IDX,
     NEQ_SYM,
@@ -98,7 +100,7 @@ class QNodes(SIA):
         self.times: tuple[np.ndarray, np.ndarray]
         self.labels = [tuple(s.lower() for s in ABECEDARY), ABECEDARY]
         self.vertices: set[tuple]
-        self.memory = dict()
+        self.individual_memory = dict()
 
         self.logger = get_logger("q_analysis")
 
@@ -132,7 +134,7 @@ class QNodes(SIA):
         mip = self.algorithm(vertices)
 
         # self.view_solution(mip)
-        return (self.memory[mip],)
+        return (self.individual_memory[mip],)
 
         # Solution(
         #     )
@@ -189,7 +191,7 @@ class QNodes(SIA):
 
                 # selección primer elemento de vertices
 
-                minimal_emd = 1e5
+                local_min_emd = 1e5
                 iter_mip: tuple[int, int] | list[tuple[int, int]]
                 index_mip: int
                 for k in range(len(deltas_ciclo)):
@@ -206,9 +208,9 @@ class QNodes(SIA):
                     #     self.memory[tuple(deltas_ciclo[k])] = iter_emd
                     iter_emd = self.funcion_submodular(deltas_ciclo[k], omegas_ciclo)
 
-                    self.logger.debug(f"local: {iter_emd}, global: {minimal_emd}")
-                    if iter_emd < minimal_emd:
-                        minimal_emd = iter_emd
+                    self.logger.debug(f"local: {iter_emd}, global: {local_min_emd}")
+                    if iter_emd < local_min_emd:
+                        local_min_emd = iter_emd
                         iter_mip = deltas_ciclo[k]
                         index_mip = k
                     ...
@@ -258,21 +260,28 @@ class QNodes(SIA):
             f"\nGrupos partición obtenidos durante ejecucion:\n{(particiones_candidatas)=}"
         )
         # Esta parte no debería existir u optimizarse pues ya deben estar guardados en memoria
-        for particion in particiones_candidatas:
-            times = np.copy(self.times)
-            for p in particion:
-                p_time, p_index = p
-                times[p_time][p_index] = ACTIVOS
-            subsys = self.sia_subsistema
-            biparticion = subsys.bipartir(times[EFECTO], times[ACTUAL])
-            vector = biparticion.distribucion_marginal()
-            emd_particion = emd_efecto(vector, self.sia_dists_marginales)
+        # minimal_emd_global = INFTY_POS
+        # for partition in particiones_candidatas:
+        #     emd_particion = INFTY_POS
+        #     if tuple(partition) in self.individual_memory:
+        #         emd_particion = self.individual_memory[tuple(partition)]
 
-            self.memory[tuple(particion)] = emd_particion
+        #     if emd_particion < minimal_emd_global:
+        #         minimal_emd_global = emd_particion
+        #     times = np.copy(self.times)
+        #     for p in particion:
+        #         p_time, p_index = p
+        #         times[p_time][p_index] = ACTIVOS
+        #     subsys = self.sia_subsistema
+        #     biparticion = subsys.bipartir(times[EFECTO], times[ACTUAL])
+        #     vector = biparticion.distribucion_marginal()
+        #     emd_particion = emd_efecto(vector, self.sia_dists_marginales)
 
-        self.logger.warn(f"{self.memory=}")
+        #     self.individual_memory[tuple(particion)] = emd_particion
 
-        return min(self.memory, key=lambda k: self.memory[k])
+        self.logger.warn(f"{self.individual_memory=}")
+
+        return min(self.individual_memory, key=lambda k: self.individual_memory[k])
         ...
 
     def funcion_submodular(
@@ -280,6 +289,7 @@ class QNodes(SIA):
     ):
         # Acá lo que se hace es a partir de los elementos que estén en el conjunto omega (W) y delta se creen en esencia, las particiones.
         times = np.copy(self.times)
+        individual_emd = INFTY_NEG
 
         self.logger.debug(f"{deltas=}")
 
@@ -292,32 +302,37 @@ class QNodes(SIA):
                 d_time, d_index = delta
                 times[d_time][d_index] = ACTIVOS
 
-        individual = self.sia_subsistema
+        if tuple(deltas) in self.individual_memory:
+            individual_emd = self.individual_memory[tuple(deltas)]
+        else:
+            individual = self.sia_subsistema
 
-        self.logger.info(f"{times[EFECTO], times[ACTUAL]=}")
+            self.logger.info(f"{times[EFECTO], times[ACTUAL]=}")
 
-        dims_efecto_ind = tuple(
-            idx for idx, bit in enumerate(times[EFECTO]) if bit == INT_ONE
-        )
-        dims_presente_ind = tuple(
-            idx for idx, bit in enumerate(times[ACTUAL]) if bit == INT_ONE
-        )
+            dims_efecto_ind = tuple(
+                idx for idx, bit in enumerate(times[EFECTO]) if bit == INT_ONE
+            )
+            dims_presente_ind = tuple(
+                idx for idx, bit in enumerate(times[ACTUAL]) if bit == INT_ONE
+            )
 
-        ind_part = individual.bipartir(
-            np.array(dims_efecto_ind, dtype=np.int8),
-            np.array(dims_presente_ind, dtype=np.int8),
-        )
-        indivector_marginal = ind_part.distribucion_marginal()
-        individual_emd = emd_efecto(indivector_marginal, self.sia_dists_marginales)
+            ind_part = individual.bipartir(
+                np.array(dims_efecto_ind, dtype=np.int8),
+                np.array(dims_presente_ind, dtype=np.int8),
+            )
+            indivector_marginal = ind_part.distribucion_marginal()
+            individual_emd = emd_efecto(indivector_marginal, self.sia_dists_marginales)
 
-        self.logger.debug(f"{self.sia_dists_marginales=}")
-        self.logger.debug(f"{indivector_marginal=}")
+            self.individual_memory[tuple(deltas)] = individual_emd
 
-        # memoizamos el individuo
-        self.logger.info(f"{individual_emd}")
+            self.logger.debug(f"{self.sia_dists_marginales=}")
+            self.logger.debug(f"{indivector_marginal=}")
 
-        self.logger.info("ind_part")
-        self.logger.info(f"{ind_part}")
+            # memoizamos el individuo
+            self.logger.info(f"{individual_emd}")
+
+            self.logger.info("ind_part")
+            self.logger.info(f"{ind_part}")
 
         # Luego lo hacemos para los omegas
         for omega in omegas:
