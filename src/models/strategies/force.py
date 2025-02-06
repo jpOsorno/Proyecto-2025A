@@ -80,7 +80,6 @@ class BruteForce(SIA):
             self.sia_dists_marginales,
             DUMMY_ARR,
             ERROR_PARTITION,
-            hablar=False,
         )
 
         small_phi = np.infty

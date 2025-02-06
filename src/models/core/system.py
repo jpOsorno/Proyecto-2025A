@@ -241,8 +241,6 @@ class System:
         new_sys = System.__new__(System)
         new_sys.estado_inicial = self.estado_inicial
 
-        print(f"----{alcance,mecanismo=}")
-
         new_sys.ncubos = tuple(
             cube.marginalizar(np.setdiff1d(cube.dims, mecanismo))
             if cube.indice in alcance

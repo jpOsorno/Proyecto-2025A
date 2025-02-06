@@ -103,8 +103,8 @@ class QNodes(SIA):
         self.memoria_delta = dict()
         self.memoria_particiones = dict()
 
-        self.idx_alcance: np.ndarray
-        self.idx_mecanismo: np.ndarray
+        self.indices_alcance: np.ndarray
+        self.indices_mecanismo: np.ndarray
 
         self.logger = setup_logger("q_strat")
 
@@ -118,8 +118,8 @@ class QNodes(SIA):
         self.m = len(self.sia_subsistema.indices_ncubos)
         self.n = len(self.sia_subsistema.dims_ncubos)
 
-        self.idx_alcance = self.sia_subsistema.indices_ncubos
-        self.idx_mecanismo = self.sia_subsistema.dims_ncubos
+        self.indices_alcance = self.sia_subsistema.indices_ncubos
+        self.indices_mecanismo = self.sia_subsistema.dims_ncubos
 
         self.tiempos = (
             np.zeros(self.n, dtype=np.int8),
@@ -210,7 +210,7 @@ class QNodes(SIA):
                 emd_local = 1e5
                 indice_mip: int
                 for k in range(len(deltas_ciclo)):
-                    print(f"{self.tiempos=}")
+                    # print(f"{self.tiempos=}")
 
                     emd_union, emd_delta, dist_marginal_delta = self.funcion_submodular(
                         deltas_ciclo[k], omegas_ciclo
@@ -296,40 +296,27 @@ class QNodes(SIA):
             Esto lo hice así para hacer almacenamiento externo de la emd individual y su distribución marginal en las particiones candidatas.
         """
 
-        tiempos = copy(self.tiempos)
+        # tiempos = copy(self.tiempos)
         emd_delta = INFTY_NEG
+
+        temporal = [[], []]
 
         if isinstance(deltas, tuple):
             d_tiempo, o_indice = deltas
+            temporal[d_tiempo].append(o_indice)
 
-            d_indice_local = (
-                np.where(self.idx_alcance == o_indice)
-                if d_tiempo
-                else np.where(self.idx_mecanismo == o_indice)
-            )[0][0]
-
-            tiempos[d_tiempo][d_indice_local] = ACTIVOS
         else:
             for delta in deltas:
                 d_tiempo, o_indice = delta
-                d_indice_local = (
-                    np.where(self.idx_alcance == o_indice)
-                    if d_tiempo
-                    else np.where(self.idx_mecanismo == o_indice)
-                )[0][0]
-                tiempos[d_tiempo][d_indice_local] = ACTIVOS
+                temporal[d_tiempo].append(o_indice)
 
         if tuple(deltas) in self.memoria_delta:
             emd_delta, vector_delta_marginal = self.memoria_delta[tuple(deltas)]
         else:
             copia_delta = self.sia_subsistema
 
-            dims_alcance_delta = tuple(
-                idx for idx, bit in enumerate(tiempos[EFECTO]) if bit == INT_ONE
-            )
-            dims_mecanismo_delta = tuple(
-                idx for idx, bit in enumerate(tiempos[ACTUAL]) if bit == INT_ONE
-            )
+            dims_alcance_delta = temporal[EFECTO]
+            dims_mecanismo_delta = temporal[ACTUAL]
 
             particion_delta = copia_delta.bipartir(
                 np.array(dims_alcance_delta, dtype=np.int8),
@@ -346,31 +333,15 @@ class QNodes(SIA):
             if isinstance(omega, list):
                 for omg in omega:
                     o_tiempo, o_indice = omg
-
-                    o_indice_local = (
-                        np.where(self.idx_alcance == o_indice)
-                        if o_tiempo
-                        else np.where(self.idx_mecanismo == o_indice)
-                    )[0][0]
-                    tiempos[o_tiempo][o_indice_local] = ACTIVOS
+                    temporal[o_tiempo].append(o_indice)
             else:
                 o_tiempo, o_indice = omega
-
-                o_indice_local = (
-                    np.where(self.idx_alcance == o_indice)
-                    if o_tiempo
-                    else np.where(self.idx_mecanismo == o_indice)
-                )[0][0]
-                tiempos[o_tiempo][o_indice_local] = ACTIVOS
+                temporal[o_tiempo].append(o_indice)
 
         copia_union = self.sia_subsistema
 
-        dims_alcance_union = tuple(
-            idx for idx, bit in enumerate(tiempos[EFECTO]) if bit == INT_ONE
-        )
-        dims_mecanismo_union = tuple(
-            idx for idx, bit in enumerate(tiempos[ACTUAL]) if bit == INT_ONE
-        )
+        dims_alcance_union = temporal[EFECTO]
+        dims_mecanismo_union = temporal[ACTUAL]
 
         particion_union = copia_union.bipartir(
             np.array(dims_alcance_union, dtype=np.int8),

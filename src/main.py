@@ -13,14 +13,17 @@ def start_up():
     config_sistema = Manager(estado_inicial=estado_inicio)
 
     # condicion, alcance, mecanismo = ("1111", "1110", "1110")  # index out or range
-    condicion, alcance, mecanismo = ("1111", "1110", "1101")  # void|void
+    condicion, alcance, mecanismo = ("1111", "1110", "1110")  # void|void
     # condicion, alcance, mecanismo = ("1111", "1000", "0000")  # index out or range
 
-    analizador_fb = BruteForce(config_sistema)
-    sia_dos = analizador_fb.aplicar_estrategia(condicion, alcance, mecanismo)
-    print(sia_dos)
+    # analizador_fb = BruteForce(config_sistema)
+    # sia_dos = analizador_fb.aplicar_estrategia(condicion, alcance, mecanismo)
+    # print(sia_dos)
 
-    analizador_fi = Phi(config_sistema)
+    # analizador_fi = Phi(config_sistema)
+    # sia_uno = analizador_fi.aplicar_estrategia(condicion, alcance, mecanismo)
+    # print(sia_uno)
+    analizador_fi = QNodes(config_sistema)
     sia_uno = analizador_fi.aplicar_estrategia(condicion, alcance, mecanismo)
     print(sia_uno)
     raise SystemExit
@@ -44,14 +47,19 @@ def start_up():
                 # )
                 # print(sia_uno)
 
-                analizador_fb = BruteForce(config_sistema)
-                sia_dos = analizador_fb.aplicar_estrategia(
+                # analizador_fb = BruteForce(config_sistema)
+                # sia_dos = analizador_fb.aplicar_estrategia(
+                #     condicion, alcance, mecanismo
+                # )
+                # print(sia_dos)
+
+                analizador_q = QNodes(config_sistema)
+                sia_tres = analizador_q.aplicar_estrategia(
                     condicion, alcance, mecanismo
                 )
-                print(sia_dos)
+                print(sia_tres)
+                # logger.debug(sia_tres)
 
-                # analizador_q = QNodes(config_sistema)
-                # resultado = analizador_q.aplicar_estrategia(condicion, alcance, mecanismo)
             except ValueError as vex:
                 # Silenciosamente ignorar ValueError
                 logger.info(f"{vex}")
