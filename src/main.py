@@ -13,16 +13,17 @@ def start_up():
     config_sistema = Manager(estado_inicial=estado_inicio)
 
     # condicion, alcance, mecanismo = ("1111", "1110", "1110")  # index out or range
-    condicion, alcance, mecanismo = ("1111", "1110", "1110")  # void|void
+    condicion, alcance, mecanismo = ("1110", "1110", "1110")  # void|void
     # condicion, alcance, mecanismo = ("1111", "1000", "0000")  # index out or range
 
-    # analizador_fb = BruteForce(config_sistema)
-    # sia_dos = analizador_fb.aplicar_estrategia(condicion, alcance, mecanismo)
-    # print(sia_dos)
+    analizador_fb = BruteForce(config_sistema)
+    sia_dos = analizador_fb.aplicar_estrategia(condicion, alcance, mecanismo)
+    print(sia_dos)
 
-    # analizador_fi = Phi(config_sistema)
-    # sia_uno = analizador_fi.aplicar_estrategia(condicion, alcance, mecanismo)
-    # print(sia_uno)
+    analizador_fi = Phi(config_sistema)
+    sia_uno = analizador_fi.aplicar_estrategia(condicion, alcance, mecanismo)
+    print(sia_uno)
+
     analizador_fi = QNodes(config_sistema)
     sia_uno = analizador_fi.aplicar_estrategia(condicion, alcance, mecanismo)
     print(sia_uno)

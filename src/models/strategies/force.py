@@ -114,8 +114,8 @@ class BruteForce(SIA):
                 )
 
         biparticion_formateada = fmt_biparticion(
-            [biparticion_dual[EFECTO], biparticion_prim[EFECTO]],
-            [biparticion_dual[ACTUAL], biparticion_prim[ACTUAL]],
+            [biparticion_prim[ACTUAL], biparticion_prim[EFECTO]],
+            [biparticion_dual[ACTUAL], biparticion_dual[EFECTO]],
         )
 
         solucion_base.perdida = small_phi
