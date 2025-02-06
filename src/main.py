@@ -35,7 +35,6 @@ def guardar_resultados(soluciones):
 
 def start_up():
     """Punto de entrada principal"""
-    logger = setup_logger("q_strat")
 
     red_usada = RED_10
     muestras: list[list[tuple[str, str]]] = red_usada[PRUEBAS]
@@ -47,6 +46,7 @@ def start_up():
     config_sistema = Manager(estado_inicial=estado_inicio)
     soluciones = cargar_resultados_existentes()  # Cargar resultados previos
 
+    logger = setup_logger("q_strat")
     for lote in muestras:
         for prueba in lote:
             if prueba in soluciones:
@@ -54,6 +54,7 @@ def start_up():
 
             alcance, mecanismo = prueba
             analizador_q = QNodes(config_sistema)
+
             solucion = analizador_q.aplicar_estrategia(condiciones, alcance, mecanismo)
             soluciones[prueba] = solucion.perdida  # Guardar en memoria
 
