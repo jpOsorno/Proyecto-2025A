@@ -223,7 +223,7 @@ class Solution:
 
         def formatear_distribucion(dist: np.ndarray):
             datos = " ".join(
-                f"{Fore.LIGHTBLACK_EX}-" if x < 0 else f"{Fore.WHITE}{x:.4f}"
+                f"{Fore.WHITE}{x:.4f}" if x > 0 else f"{Fore.LIGHTBLACK_EX}0."
                 for x in dist
             )
             return f"[ {datos} ]"
