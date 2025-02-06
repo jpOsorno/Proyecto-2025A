@@ -95,4 +95,5 @@ class Phi(SIA):
             distribucion_subsistema=repertorio,
             distribucion_particion=repertorio_partido,
             particion=format,
+            hablar=False,
         )

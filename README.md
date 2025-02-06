@@ -2,18 +2,20 @@
 
 Base del proyecto para dar desarrollo a estrategias más elaboradas.
 
+Para clonar el repositorio con github debemos tener GIT y aplicar el comando sobre un directorio cómodo para guardar el proyecto `git clone https://github.com/Complexum/Proyecto-2025A .`.
+
 ---
 
 ## Instalación
 
-Guía de Configuración del Entorno con UV y VSCode
+Guía de Configuración del Entorno con VSCode
 
-### ⚙️ Instalación - Configuración Express con UV + VSCode
+### ⚙️ Instalación - Configuración
 
 #### 📋 **Requisitos Mínimos**
-- ![PowerShell](https://img.shields.io/badge/-PowerShell-blue?style=flat-square) Terminal PowerShell (¡nada de CMD!)
+- ![PowerShell](https://img.shields.io/badge/-PowerShell-blue?style=flat-square) Terminal PowerShell/Bash.
 - ![VSCode](https://img.shields.io/badge/-VSCode-007ACC?logo=visualstudiocode&style=flat-square) Visual Studio Code instalado
-- ![Python](https://img.shields.io/badge/-Python%203.11.9-3776AB?logo=python&style=flat-square) Versión exacta: 3.11.9
+- ![Python](https://img.shields.io/badge/-Python%203.11.9-3776AB?logo=python&style=flat-square) Versión python 3.11.9 (o similar)
 
 ---
 
@@ -28,36 +30,39 @@ Guía de Configuración del Entorno con UV y VSCode
 2. **🔄 Reinicio**
    - Cierra y vuelve a abrir VSCode (obligado ✨).
    - Verifica que en la terminal veas `(.venv)` al principio  
-     *(Si no: ejecuta `.\.venv\Scripts\activate` manualmente)*
+     *(Si no: Ejecuta `.\.venv\Scripts\activate` manualmente)*
 
 3. **💣 Instalación con UV**  
-   En la terminal PowerShell (.venv activado):  
+   En la terminal PowerShell (.venv activado): 
+   Primero instalamos `uv` con 
+   ```powershell
+   pip install uv
+   ```
+   Procedemos a instalar las librerías con
    ```powershell
    python -m uv pip install -e .
    ```
 
-> Este comando
+> **Este comando:**
 > Instala dependencias de pyproject.toml
 > Configura el proyecto en modo desarrollo (-e)
 > Genera proyecto_2025a.egg-info con metadatos
 
 4. ✅ Verificación Exitosa
    ✔️ Sin errores en terminal
-
    ✔️ Carpeta proyecto_2025a.egg-info creada
-
    ✔️ Posibilidad de importar dependencias desde Python
 
 🔥 Notas Críticas
-   - Usar siempre PowerShell como terminal predeterminada
+   - Procura usar la PowerShell como terminal predeterminada (o Bash)
    - Activar entorno virtual antes de cualquier operación
-   - La carpeta proyecto_2025a.egg-info es esencial - incluir en .gitignore
+   - La carpeta proyecto_2025a.egg-info es esencial
 
 ### Ejecución del programa
 
 Abres una terminal, escribes `py e` tabulas y das enter, _así de simple_! Alternativamente escribiendo en terminal `python .\exec.py` deberás ejecutar una muestra del aplicativo para una Red de 04 nodos, generarando un análisis completo sobre la misma, de tal forma que se obtendrán varios artefactos tras la ejecución
 
-Por otro lado puedes realizar un anális específico sobre una red
+Por otro lado puedes realizar un anális específico sobre una red usando el método `aplicar_estrategia(...)` con los parámetros respectivos.
 
 Al final podemos realizar ejecución desde `py exec` y pasar a corregir los errores de la librería Pyphi (en el documento `.docs\errors.md` encuentras la guía de bolsillo para arreglar estos problemas).
 
@@ -66,7 +71,7 @@ Tras ello podrás realizar distintas pruebas en el aplicativo, por ejemplo, el c
 ```py
 from src.controllers.manager  import Manager
 
-from src.models.logic.force import BruteForce
+from src.models.strategies.force import BruteForce
 
 
 def start_up():
@@ -97,7 +102,7 @@ Así mismo si quisieramos hacer más pruebas con un subsistema **específico** p
 ```py
 from src.controllers.manager  import Manager
 
-from src.models.logic.force import BruteForce
+from src.models.strategies.force import BruteForce
 
 
 def start_up():
@@ -125,7 +130,7 @@ Por ejemplo una ejecución con **Pyphi** para una red específica se vería así
 ```py
 from src.controllers.manager  import Manager
 
-from src.models.logic.phi import Phi
+from src.models.strategies.phi import Phi
 
 
 def start_up():
