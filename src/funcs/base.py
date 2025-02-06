@@ -1,3 +1,4 @@
+from itertools import product
 import logging
 from datetime import datetime
 from pathlib import Path
@@ -157,6 +158,16 @@ def lil_endian(n: int) -> np.ndarray:
 
 def dec2bin(decimal: int, width: int) -> str:
     return format(decimal, f"0{width}b")
+
+
+def estados_binarios(n: int, veces=3):
+    # Números de 0 a 2^N #
+    rango = [dec2bin(i, n) for i in range(2**n)]
+    return product(rango, repeat=veces)
+
+
+# def estados_binarios(n: int, veces) -> str:
+#     return ["".join(map(str, comb)) for comb in product([0, 1], repeat=n)]
 
 
 def setup_logger(name: str) -> logging.Logger:

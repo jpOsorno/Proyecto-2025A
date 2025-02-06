@@ -42,11 +42,11 @@ class BruteForce(SIA):
         profiler_manager.start_session(
             f"NET{len(config.estado_inicial)}{config.pagina}"
         )
-        self.logger = setup_logger("bruteforce_analysis")
         self.debug_observer = DebugObserver()
         self.distancia_metrica: Callable = seleccionar_metrica(
             aplicacion.distancia_metrica
         )
+        self.logger = setup_logger("bruteforce_analysis")
 
     @profile(context={"type": "bruteforce_analysis"})
     def aplicar_estrategia(self, condiciones: str, alcance: str, mecanismo: str):
