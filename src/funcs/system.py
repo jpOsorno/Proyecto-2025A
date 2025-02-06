@@ -1,4 +1,4 @@
-from itertools import combinations, product
+from itertools import product, chain, combinations, islice
 from typing import Generator, Tuple, Union
 import numpy as np
 
@@ -117,3 +117,19 @@ def generar_particiones(
         for i in range(m_combinations)
         for j in range(n_combinations)
     ]
+
+
+def biparticiones(
+    alcances: np.ndarray,
+    mecanismos: np.ndarray,
+    total=None,
+):
+    if total is None:
+        total = (1 << alcances.size) * (1 << mecanismos.size)
+    return islice(
+        product(subconjuntos(alcances), subconjuntos(mecanismos)), 1, total - 1
+    )
+
+
+def subconjuntos(arr: np.ndarray):
+    return chain.from_iterable(combinations(arr, r) for r in range(len(arr) + 1))

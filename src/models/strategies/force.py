@@ -6,6 +6,7 @@ from numpy.typing import NDArray
 from src.funcs.base import seleccionar_metrica, setup_logger, literales
 from src.funcs.format import fmt_biparticion
 from src.funcs.system import (
+    biparticiones,
     generar_candidatos,
     generar_particiones,
     generar_subsistemas,
@@ -19,7 +20,13 @@ from src.middlewares.profile import profile, profiler_manager
 from src.middlewares.observer import DebugObserver
 
 from models.base.application import aplicacion
-from src.constants.base import ACTUAL, EFECTO, VOID_STR
+from src.constants.base import (
+    ACTUAL,
+    DUMMY_ARR,
+    DUMMY_EMD,
+    EFECTO,
+    ERROR_PARTITION,
+)
 
 
 class BruteForce(SIA):
@@ -67,58 +74,56 @@ class BruteForce(SIA):
 
         self.logger.info(condiciones)
 
-        small_phi, mejor_particion, mejor_dist_marg = np.infty, VOID_STR, None
+        solucion_base = Solution(
+            "Fuerza bruta",
+            DUMMY_EMD,
+            self.sia_dists_marginales,
+            DUMMY_ARR,
+            ERROR_PARTITION,
+            hablar=False,
+        )
+
+        small_phi = np.infty
+        mejor_dist_marg: np.ndarray = DUMMY_ARR
+
         futuros = self.sia_subsistema.indices_ncubos
         presentes = self.sia_subsistema.dims_ncubos
+        biparticion_prim: tuple[tuple[int, ...], tuple[int, ...]]
+        biparticion_dual: tuple[tuple[int, ...], tuple[int, ...]]
         m, n = futuros.size, presentes.size
 
-        for subalcance, submecanismo in generar_particiones(m, n):
-            alcance_primal = np.array(
-                [futuros[idx] for idx, bit in enumerate(subalcance) if bit],
-                dtype=np.int8,
-            )
-            mecanismo_primal = np.array(
-                [presentes[idx] for idx, bit in enumerate(submecanismo) if bit],
-                dtype=np.int8,
-            )
-
+        for subalcance, submecanismo in biparticiones(
+            futuros, presentes, (1 << m) * (1 << n)
+        ):
             subsistema = self.sia_subsistema
-            particion = subsistema.bipartir(alcance_primal, mecanismo_primal)
+            arr_alcance = np.array(subalcance, dtype=np.int8)
+            arr_mecanismo = np.array(submecanismo, dtype=np.int8)
+
+            particion = subsistema.bipartir(arr_alcance, arr_mecanismo)
 
             part_marg_dist = particion.distribucion_marginal()
-
-            self.distancia_metrica = seleccionar_metrica(aplicacion.distancia_metrica)
             emd_value = self.distancia_metrica(
                 part_marg_dist, self.sia_dists_marginales
             )
             if emd_value < small_phi:
                 small_phi = emd_value
                 mejor_dist_marg = part_marg_dist
-                mejor_particion = submecanismo, subalcance
-                mejor_sistema = particion
-
-                self.logger.info(particion)
-
-        prim: tuple[list, list] = [], []
-        dual: tuple[list, list] = [], []
-
-        for bit, i in zip(mejor_particion[EFECTO], mejor_sistema.indices_ncubos):
-            prim[bit].append(i)
-        for bit, j in zip(mejor_particion[ACTUAL], mejor_sistema.dims_ncubos):
-            dual[bit].append(j)
+                biparticion_prim = submecanismo, subalcance
+                biparticion_dual = (
+                    set(presentes.data) - set(submecanismo),
+                    set(futuros.data) - set(subalcance),
+                )
 
         biparticion_formateada = fmt_biparticion(
-            [dual[EFECTO], prim[EFECTO]],
-            [dual[ACTUAL], prim[ACTUAL]],
+            [biparticion_dual[EFECTO], biparticion_prim[EFECTO]],
+            [biparticion_dual[ACTUAL], biparticion_prim[ACTUAL]],
         )
 
-        return Solution(
-            "Fuerza bruta",
-            small_phi,
-            self.sia_dists_marginales,
-            mejor_dist_marg,
-            biparticion_formateada,
-        )
+        solucion_base.perdida = small_phi
+        solucion_base.distribucion_particion = mejor_dist_marg
+        solucion_base.particion = biparticion_formateada
+
+        return solucion_base
 
     @profile(context={"type": "bruteforce_full_analysis"})
     def analizar_completamente_una_red(self) -> None:

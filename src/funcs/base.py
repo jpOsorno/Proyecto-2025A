@@ -156,18 +156,69 @@ def lil_endian(n: int) -> np.ndarray:
     return result
 
 
+def get_restricted_combinations(binary_str: str) -> tuple[list[str], list[str]]:
+    """
+    Genera las combinaciones para B y C basadas en la cadena binaria A.
+    B solo puede tener 1s donde A tiene 1s.
+    """
+    # Contar cuántos 1s hay en la cadena
+    ones_count = binary_str.count("1")
+    width = len(binary_str)
+
+    # Encontrar las posiciones de los 1s en A
+    one_positions = [i for i, bit in enumerate(binary_str) if bit == "1"]
+
+    def generate_valid_combinations():
+        # Generamos todas las combinaciones posibles de 0s y 1s para las posiciones donde A tiene 1s
+        base_combinations = list(product(["0", "1"], repeat=ones_count))
+        valid_combinations = []
+
+        # Para cada combinación base, creamos una cadena del ancho total
+        for comb in base_combinations:
+            # Empezamos con todos 0s
+            result = ["0"] * width
+            # Colocamos los bits de la combinación en las posiciones donde A tiene 1s
+            for pos, bit in zip(one_positions, comb):
+                result[pos] = bit
+            valid_combinations.append("".join(result))
+
+        return valid_combinations
+
+    # B tiene restricciones, C no
+    B = generate_valid_combinations()
+    C = (
+        B.copy()
+    )  # En este caso C es igual a B, pero podría ser diferente si se necesita
+
+    return B, C
+
+
+def generate_combinations(A: str) -> list[tuple[str, str, str]]:
+    """
+    Genera el producto cartesiano final de A con las combinaciones válidas de B y C.
+    """
+    B, C = get_restricted_combinations(A)
+    # Convertimos A, B y C en formato "XX XX XX"
+    formatted_B = ["".join(b[i : i + 2] for i in range(0, len(b), 2)) for b in B]
+    formatted_C = ["".join(c[i : i + 2] for i in range(0, len(c), 2)) for c in C]
+    formatted_A = "".join(A[i : i + 2] for i in range(0, len(A), 2))
+
+    # Generamos el producto cartesiano
+    return list(product([formatted_A], formatted_B, formatted_C))[1:]
+
+
 def dec2bin(decimal: int, width: int) -> str:
     return format(decimal, f"0{width}b")
 
 
-def estados_binarios(n: int, veces=3):
-    # Números de 0 a 2^N #
-    rango = [dec2bin(i, n) for i in range(2**n)]
-    return product(rango, repeat=veces)
+def estados_binarios(n: int):
+    return [dec2bin(i, n) for i in range(1 << n)][1:]
 
 
-# def estados_binarios(n: int, veces) -> str:
-#     return ["".join(map(str, comb)) for comb in product([0, 1], repeat=n)]
+# def estados_binarios(n: int, veces=3):
+#     # Números de 0 a 2^N #
+#     rango = [dec2bin(i, n) for i in range(2**n)]
+#     return product(rango, repeat=veces)
 
 
 def setup_logger(name: str) -> logging.Logger:
