@@ -1,3 +1,4 @@
+from itertools import product
 import logging
 from datetime import datetime
 from pathlib import Path
