@@ -53,7 +53,7 @@ def start_up():
                 continue  # Si ya está guardado, lo saltamos
 
             alcance, mecanismo = prueba
-            analizador_q = Phi(config_sistema)
+            analizador_q = QNodes(config_sistema)
             solucion = analizador_q.aplicar_estrategia(condiciones, alcance, mecanismo)
             soluciones[prueba] = solucion.perdida  # Guardar en memoria
 
