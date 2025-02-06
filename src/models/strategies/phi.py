@@ -69,25 +69,29 @@ class Phi(SIA):
         )
         small_phi: float = mip.phi
 
-        repertorio = mip.repertoire.flatten()
-        repertorio_partido = mip.partitioned_repertoire.flatten()
+        repertorio = repertorio_partido = [-1]
+        format = "NO-PARTITION"
 
-        states = int(math.log2(mip.repertoire.size))
-        sub_states: np.ndarray = lil_endian(states)
+        if mip.repertoire is not None:
+            repertorio = mip.repertoire.flatten()
+            repertorio_partido = mip.partitioned_repertoire.flatten()
 
-        repertorio.put(sub_states, repertorio)
-        repertorio_partido.put(sub_states, repertorio_partido)
+            states = int(math.log2(mip.repertoire.size))
+            sub_states: np.ndarray = lil_endian(states)
 
-        mejor_biparticion: Bipartition = mip.partition
-        prim: Part = mejor_biparticion.parts[True]
-        dual: Part = mejor_biparticion.parts[False]
+            repertorio.put(sub_states, repertorio)
+            repertorio_partido.put(sub_states, repertorio_partido)
 
-        prim_mech, prim_purv = prim.mechanism, prim.purview
-        dual_mech, dual_purv = dual.mechanism, dual.purview
-        format = fmt_biparticion(
-            [dual_purv, dual_mech],
-            [prim_purv, prim_mech],
-        )
+            mejor_biparticion: Bipartition = mip.partition
+            prim: Part = mejor_biparticion.parts[True]
+            dual: Part = mejor_biparticion.parts[False]
+
+            prim_mech, prim_purv = prim.mechanism, prim.purview
+            dual_mech, dual_purv = dual.mechanism, dual.purview
+            format = fmt_biparticion(
+                [dual_mech, dual_purv],
+                [prim_mech, prim_purv],
+            )
 
         return Solution(
             estrategia="Pyphi",
@@ -95,4 +99,5 @@ class Phi(SIA):
             distribucion_subsistema=repertorio,
             distribucion_particion=repertorio_partido,
             particion=format,
+            hablar=False,
         )

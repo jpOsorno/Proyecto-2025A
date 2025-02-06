@@ -1,6 +1,6 @@
 from src.controllers.manager import Manager
 
-from src.models.logic.force import BruteForce
+from src.models.strategies.force import BruteForce
 
 
 def start_up():

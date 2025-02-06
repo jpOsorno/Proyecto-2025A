@@ -232,7 +232,7 @@ class System:
         Es en este método donde generamos a partir de un subsistema, una bipartición.
 
         Args:
-            alcance (NDArray[np.int8]): Variables futuras que idedalmente hacen parte del subsistema, estas seleccionan ubn subconjunto dentro del mismo el cuál será marginalizado en las dimensiones excluídas.
+            alcance (NDArray[np.int8]): Variables futuras que idedalmente hacen parte del subsistema, estas seleccionan un subconjunto dentro del mismo el cuál será marginalizado en las dimensiones excluídas.
             mecanismo (NDArray[np.int8]): Acá está el conjunto de dimensiones primales dadas, donde marginalizarán todos los n-cubos cuyo índice no haga parte del alcance.
 
         Returns:
@@ -240,6 +240,7 @@ class System:
         """
         new_sys = System.__new__(System)
         new_sys.estado_inicial = self.estado_inicial
+
         new_sys.ncubos = tuple(
             cube.marginalizar(np.setdiff1d(cube.dims, mecanismo))
             if cube.indice in alcance

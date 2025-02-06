@@ -27,7 +27,7 @@ class SIA(ABC):
     def __init__(self, config: Manager) -> None:
         self.sia_loader = config
         self.sia_debug_observer = DebugObserver()
-        self.sia_logger = setup_logger("sia_preparation")
+        # self.sia_logger = setup_logger("sia_preparation")
 
         self.sia_subsistema: System
         self.sia_dists_marginales: NDArray[np.float32]
@@ -82,18 +82,18 @@ class SIA(ABC):
 
         # Formación de datos con logs opcionales de ejemplificación
         completo = System(tpm, estado_inicial)
-        self.sia_logger.warning("Original:")
-        self.sia_logger.debug(completo)
+        # self.sia_logger.warning("Original:")
+        # self.sia_logger.debug(completo)
 
         candidato = completo.condicionar(dims_condicionadas)
-        self.sia_logger.warning("Candidato:")
-        self.sia_logger.info(f"{dims_condicionadas}")
-        self.sia_logger.debug(candidato)
+        # self.sia_logger.warning("Candidato:")
+        # self.sia_logger.info(f"{dims_condicionadas}")
+        # self.sia_logger.debug(candidato)
 
         subsistema = candidato.substraer(dims_alcance, dims_mecanismo)
-        self.sia_logger.warning("Subsys:")
-        self.sia_logger.info(f"{dims_alcance, dims_mecanismo=}")
-        self.sia_logger.debug(subsistema)
+        # self.sia_logger.warning("Subsys:")
+        # self.sia_logger.info(f"{dims_alcance, dims_mecanismo=}")
+        # self.sia_logger.debug(subsistema)
 
         self.sia_subsistema = subsistema
         self.sia_dists_marginales = subsistema.distribucion_marginal()
