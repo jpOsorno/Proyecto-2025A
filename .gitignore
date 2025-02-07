@@ -196,3 +196,4 @@ __pyphi_cache__/**
 src\tests\**
 \src\tests\**
 src\tests\redes.py
+src/testing/

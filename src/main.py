@@ -1,41 +1,19 @@
 import pandas as pd
 import os
+import time
 from funcs.base import setup_logger
-from models.strategies.phi import Phi
-from src.controllers.manager import Manager
 from models.strategies.q_nodes import QNodes
+from src.controllers.manager import Manager
 from tests.pruebas import NUM_NODOS, PRUEBAS, RED_10
 
 # Nombre del archivo #
 FILE_NAME = "src/tests/resultados.xlsx"
 
 
-def cargar_resultados_existentes():
-    """Carga los resultados ya guardados en el archivo para evitar repetir cálculos."""
-    if os.path.exists(FILE_NAME):
-        df = pd.read_excel(FILE_NAME)
-        return {
-            (row["Alcance"], row["Mecanismo"]): row["Solución"]
-            for _, row in df.iterrows()
-        }
-    return {}
-
-
-def guardar_resultados(soluciones):
-    """Guarda los resultados en un archivo Excel sin sobrescribir datos previos."""
-    df = pd.DataFrame(
-        [
-            (alcance, mecanismo, solucion)
-            for (alcance, mecanismo), solucion in soluciones.items()
-        ],
-        columns=["Alcance", "Mecanismo", "Solución"],
-    )
-    df.to_excel(FILE_NAME, index=False)
 
 
 def start_up():
     """Punto de entrada principal"""
-
     red_usada = RED_10
     muestras: list[list[tuple[str, str]]] = red_usada[PRUEBAS]
     num_nodos: int = red_usada[NUM_NODOS]
@@ -55,8 +33,14 @@ def start_up():
             alcance, mecanismo = prueba
             analizador_q = QNodes(config_sistema)
 
+            inicio_tiempo = time.time()
             solucion = analizador_q.aplicar_estrategia(condiciones, alcance, mecanismo)
-            soluciones[prueba] = solucion.perdida  # Guardar en memoria
+            tiempo_ejecucion = time.time() - inicio_tiempo
+
+            soluciones[prueba] = (
+                solucion.perdida,
+                tiempo_ejecucion,
+            )  # Guardar en memoria
 
             # Guardar inmediatamente para minimizar pérdida en caso de crash
             guardar_resultados(soluciones)
