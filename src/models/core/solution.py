@@ -214,7 +214,7 @@ class Solution:
                 - Mejor partición encontrada en magenta
                 - Elementos decorativos en cyan
 
-        Note:
+        Notes:
         -----
             Utiliza la biblioteca colorama para el formato de colores, permitiedo una visualización clara por terminal.
         """
