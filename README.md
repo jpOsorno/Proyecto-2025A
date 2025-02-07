@@ -2,7 +2,7 @@
 
 Base del proyecto para dar desarrollo a estrategias más elaboradas.
 
-Para clonar el repositorio con github debemos tener GIT y aplicar el comando sobre un directorio cómodo para guardar el proyecto `git clone https://github.com/Complexum/Proyecto-2025A .`.
+Para clonar el repositorio con github debemos tener GIT y aplicar el comando sobre un directorio cómodo para guardar el proyecto `git clone https://github.com/Complexum/Proyecto-2025A .` y poder comenzar con nuestra asombrosa aventura!
 
 ---
 
@@ -15,7 +15,7 @@ Guía de Configuración del Entorno con VSCode
 #### 📋 **Requisitos Mínimos**
 - ![PowerShell](https://img.shields.io/badge/-PowerShell-blue?style=flat-square) Terminal PowerShell/Bash.
 - ![VSCode](https://img.shields.io/badge/-VSCode-007ACC?logo=visualstudiocode&style=flat-square) Visual Studio Code instalado
-- ![Python](https://img.shields.io/badge/-Python%203.11.9-3776AB?logo=python&style=flat-square) Versión python 3.11.9 (o similar)
+- ![Python](https://img.shields.io/badge/-Python%203.6.8-3776AB?logo=python&style=flat-square) Versión python 3.6.8 (o similar)
 
 ---
 
@@ -24,7 +24,7 @@ Guía de Configuración del Entorno con VSCode
 1. **🔥 Crear Entorno Virtual**  
    - Abre VSCode y presiona `Ctrl + Shift + P`
    - Busca y selecciona:  
-     `Python: Create Environment` → `Venv` → `Python 3.11.9 64-bit` y si es el de la `(Microsoft Store)` mejor.
+     `Python: Create Environment` → `Venv` → `Python 3.6.8 64-bit` y si es el de la `(Microsoft Store)` mejor.
    - ![Wait](https://img.shields.io/badge/-ESPERA_5_segundos-important) Hasta que aparezca la carpeta `.venv`.
 
 2. **🔄 Reinicio**
@@ -158,4 +158,4 @@ Donde sobre un sistema de nodos $V=\{A,B,C,D\}$ tomamos un sistema candidato $V_
 
 En el archivo de pruebas en el directorio `.tests` encontrarás el documento excel con las pruebas a resolver mediante uso del aplicativo.
 
-Para finalizar cabe recordar que el repositorio está atento a cambios o mejoras propuestas por parte de los cursantes, de forma que es oportuno realizar `git pull origin main` para tener siempre la versión más reciente 🫶!
+Para finalizar cabe recordar que el repositorio está atento a cambios o mejoras propuestas por parte de los cursantes, de forma que es oportuno realizar `git pull origin main` _(o simplemente desde main `git pull`)_ para tener siempre la versión más reciente 🫶!
