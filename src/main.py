@@ -6,7 +6,7 @@ from src.controllers.manager import Manager
 from models.strategies.q_nodes import QNodes
 from tests.pruebas import NUM_NODOS, PRUEBAS, RED_10
 
-# Nombre del archivo
+# Nombre del archivo #
 FILE_NAME = "src/tests/resultados.xlsx"
 
 
