@@ -157,3 +157,5 @@ Donde sobre un sistema de nodos $V=\{A,B,C,D\}$ tomamos un sistema candidato $V_
 ### Pruebas 🧪
 
 En el archivo de pruebas en el directorio `.tests` encontrarás el documento excel con las pruebas a resolver mediante uso del aplicativo.
+
+Para finalizar cabe recordar que el repositorio está atento a cambios o mejoras propuestas por parte de los cursantes, de forma que es oportuno realizar `git pull origin main` para tener siempre la versión más reciente 🫶!
