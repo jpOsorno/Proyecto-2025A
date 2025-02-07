@@ -1,15 +1,10 @@
-import pandas as pd
-import os
-import time
 from funcs.base import setup_logger
 from models.strategies.q_nodes import QNodes
 from src.controllers.manager import Manager
-from tests.pruebas import NUM_NODOS, PRUEBAS, RED_10
+import time
 
-# Nombre del archivo #
-FILE_NAME = "src/tests/resultados.xlsx"
-
-
+from testing.data import NUM_NODOS, PRUEBAS, RED_10
+from testing.funcs import cargar_resultados_existentes, guardar_resultados
 
 
 def start_up():
