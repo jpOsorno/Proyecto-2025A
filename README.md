@@ -137,7 +137,7 @@ def start_up():
     """Punto de entrada principal"""
                    # ABCD #
     estado_inicio = "1000"
-    condiciones =   "1000"
+    condiciones =   "1110"
     mechanismo =    "0110"
     alcance =       "1010"
 
