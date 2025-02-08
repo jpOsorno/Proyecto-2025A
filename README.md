@@ -15,7 +15,7 @@ Guía de Configuración del Entorno con VSCode
 #### 📋 **Requisitos Mínimos**
 - ![PowerShell](https://img.shields.io/badge/-PowerShell-blue?style=flat-square) Terminal PowerShell/Bash.
 - ![VSCode](https://img.shields.io/badge/-VSCode-007ACC?logo=visualstudiocode&style=flat-square) Visual Studio Code instalado.
-- ![Python](https://img.shields.io/badge/-Python%203.6.8-3776AB?logo=python&style=flat-square) Versión python 3.6.8 (o similar).
+- ![Python](https://img.shields.io/badge/-Python%203.9.13-3776AB?logo=python&style=flat-square) Versión python 3.9.13 (o similar).
 
 ---
 
