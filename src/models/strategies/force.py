@@ -40,8 +40,8 @@ class BruteForce(SIA):
     >>>    self.logger.debuging("debuging message")
     >>>    self.logger.error("Error occurred")
 
-    Así mismo este se almacenará en el archivo con el nombre que hayamos asociado.
-    Este archivo de profilling de extensión HTML lo arrastras hasta tu navegador y se visualizará la depuración del aplicativo a lo largo del tiepmo en dos vistas, tanto temporal como cumulativa sobre coste temporal en subrutinas.
+    Así mismo este se almacenará en el archivo con el nombre que hayamos asociado en el `setup_logger(...)`.
+    Este archivo de profilling de extensión HTML lo arrastras hasta tu navegador y se visualizará la depuración del aplicativo a lo largo del tiempo en dos vistas, temporal y cumulativa sobre el coste temporal en subrutinas.
     """
 
     def __init__(self, config: Manager):
