@@ -14,18 +14,18 @@ Guía de Configuración del Entorno con VSCode
 
 #### 📋 **Requisitos Mínimos**
 - ![PowerShell](https://img.shields.io/badge/-PowerShell-blue?style=flat-square) Terminal PowerShell/Bash.
-- ![VSCode](https://img.shields.io/badge/-VSCode-007ACC?logo=visualstudiocode&style=flat-square) Visual Studio Code instalado
-- ![Python](https://img.shields.io/badge/-Python%203.6.8-3776AB?logo=python&style=flat-square) Versión python 3.6.8 (o similar)
+- ![VSCode](https://img.shields.io/badge/-VSCode-007ACC?logo=visualstudiocode&style=flat-square) Visual Studio Code instalado.
+- ![Python](https://img.shields.io/badge/-Python%203.6.8-3776AB?logo=python&style=flat-square) Versión python 3.6.8 (o similar).
 
 ---
 
 #### 🚀 **Configuración**
 
 1. **🔥 Crear Entorno Virtual**  
-   - Abre VSCode y presiona `Ctrl + Shift + P`
+   - Abre VSCode y presiona `Ctrl + Shift + P`.
    - Busca y selecciona:  
      `Python: Create Environment` → `Venv` → `Python 3.6.8 64-bit` y si es el de la `(Microsoft Store)` mejor.
-   - ![Wait](https://img.shields.io/badge/-ESPERA_5_segundos-important) Hasta que aparezca la carpeta `.venv`.
+   - ![Wait](https://img.shields.io/badge/-ESPERA_5_segundos-important) Hasta que aparezca la carpeta `.venv`
 
 2. **🔄 Reinicio**
    - Cierra y vuelve a abrir VSCode (obligado ✨).
