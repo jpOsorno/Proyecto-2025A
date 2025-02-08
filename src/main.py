@@ -1,5 +1,5 @@
-from funcs.base import setup_logger
-from models.strategies.q_nodes import QNodes
+from src.funcs.base import setup_logger
+from src.models.strategies.q_nodes import QNodes
 from src.controllers.manager import Manager
 import time
 
