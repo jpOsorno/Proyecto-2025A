@@ -24,7 +24,7 @@ Guía de Configuración del Entorno con VSCode
 1. **🔥 Crear Entorno Virtual**  
    - Abre VSCode y presiona `Ctrl + Shift + P`.
    - Busca y selecciona:  
-     `Python: Create Environment` → `Venv` → `Python 3.6.8 64-bit` y si es el de la `(Microsoft Store)` mejor.
+     `Python: Create Environment` → `Venv` → `Python 3.9.13 64-bit` y si es el de la `(Microsoft Store)` mejor. En este paso, es usualmente recomendable el hacer instalación del Virtual Environment mediante el archivo de requerimientos, no obstante si deseas jugartela a una instalación más eficiente y controlada _(no aplica a todos)_, puedes usar UV. Esto 
    - ![Wait](https://img.shields.io/badge/-ESPERA_5_segundos-important) Hasta que aparezca la carpeta `.venv`
 
 2. **🔄 Reinicio**
@@ -32,18 +32,18 @@ Guía de Configuración del Entorno con VSCode
    - Verifica que en la terminal veas `(.venv)` al principio  
      *(Si no: Ejecuta `.\.venv\Scripts\activate` manualmente)*
 
-3. **💣 Instalación con UV**  
-   En la terminal PowerShell (.venv activado): 
-   Primero instalamos `uv` con 
-   ```powershell
-   pip install uv
-   ```
-   Procedemos a instalar las librerías con
-   ```powershell
-   python -m uv pip install -e .
-   ```
 
->   Alternativamente si prefieres usar el archivo de requerimientos este te permitirá seleccionar el mismo o alternativamente ejecuta `py -m pip install -r requirements.txt`, eso te instalará las librerías requeridas si las seleccionas con un checkbox.
+> **💣 Instalación opcional con UV**  
+>   En la terminal PowerShell (.venv activado): 
+>   Primero instalamos `uv` con 
+>   ```powershell
+>   pip install uv
+>   ```
+>   Procedemos a instalar las librerías con
+>   ```powershell
+>   python -m uv pip install -e .
+>   ```
+
 
 Si te sale un error que esté asociado con las herramientas de desarrollo de c++, esto ocurre puesto Pyphi utiliza compiladores en Cython/C/C++ para el cálculo de la EMD Causal. Con esto debes debes instalar [Microsoft C++ Build Tools](https://visualstudio.microsoft.com/es/visual-cpp-build-tools/) o si ya lo tienes dale en "Modificar" para posteriormente seleccionar la `MSVCv142 - VS 2019 C++ x64/86 build tools`, con esto debería de arreglarse para siempre.
 

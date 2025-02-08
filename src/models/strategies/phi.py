@@ -2,7 +2,7 @@ import numpy as np
 from src.funcs.base import ABECEDARY, lil_endian, setup_logger
 from src.funcs.format import fmt_biparticion
 from src.middlewares.observer import DebugObserver
-from controllers.manager import Manager
+from src.controllers.manager import Manager
 from src.models.base.sia import SIA
 
 import math
@@ -15,7 +15,7 @@ from pyphi.models.cuts import Bipartition, Part
 from src.middlewares.profile import profile, profiler_manager
 from src.models.core.solution import Solution
 
-from models.base.application import aplicacion
+from src.models.base.application import aplicacion
 
 from src.models.enums.distance import MetricDistance
 from src.constants.base import (
@@ -99,5 +99,4 @@ class Phi(SIA):
             distribucion_subsistema=repertorio,
             distribucion_particion=repertorio_partido,
             particion=format,
-            hablar=False,
         )

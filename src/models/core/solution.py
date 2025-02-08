@@ -3,7 +3,7 @@ import pyttsx3
 from pyttsx3.engine import Engine
 from pyttsx3.voice import Voice
 import numpy as np
-from threading import Thread
+from threading import Thread,Event
 from typing import Optional
 
 from src.models.base.application import aplicacion
@@ -112,10 +112,39 @@ class Solution:
         self.distribucion_particion = distribucion_particion
         self.particion = particion
         self.id_voz = voz
+        self._stop_event = Event()
+        self._voice_thread = None
+        self._hablar = hablar  # Guardamos la preferencia pero no iniciamos la voz todavía
 
-        if hablar:
-            voz = Thread(target=self.__anunciar_solucion)
-            voz.start()
+
+
+        # if hablar:
+        #     self._voice_thread = Thread(target=self.__anunciar_solucion)
+        #     self._voice_thread.daemon = True  # Hacer el hilo daemon
+        #     self._voice_thread.start()
+
+
+
+    def anunciar(self):
+        """
+        Método público para iniciar el anuncio de voz cuando estemos seguros
+        de que los cálculos están completos
+        """
+        if self._hablar and not self._voice_thread:
+            self._voice_thread = Thread(target=self.__anunciar_solucion)
+            self._voice_thread.daemon = True
+            self._voice_thread.start()
+
+    def __del__(self):
+        """Destructor que asegura la limpieza del hilo de voz"""
+        self.detener_voz()
+        
+
+    def detener_voz(self):
+        """Detiene el hilo de voz de manera segura"""
+        if self._voice_thread and self._voice_thread.is_alive():
+            self._stop_event.set()
+            self._voice_thread.join(timeout=1.0)
 
     def __obtener_voz_espanol(self, motor: Engine) -> Optional[str]:
         """
@@ -184,6 +213,9 @@ class Solution:
         try:
             motor = pyttsx3.init()
 
+            if self._stop_event.is_set():
+                return
+
             id_voz = self.id_voz or self.__obtener_voz_espanol(motor)
             if id_voz:
                 motor.setProperty("voice", id_voz)
@@ -196,11 +228,18 @@ class Solution:
                 if self.perdida > 0
                 else "No hubo pérdida."
             )
-            motor.say(mensaje)
-            motor.runAndWait()
+
+            if not self._stop_event.is_set():
+                motor.say(mensaje)
+                motor.runAndWait()
         except Exception as e:
             print(f"Error al inicializar el motor de voz: {e}")
-
+        finally:
+            try:
+                motor.stop()
+            except:
+                pass
+            
     def __str__(self) -> str:
         """
         Genera una representación en string formateada y coloreadita de la solución.
