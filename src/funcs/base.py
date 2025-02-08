@@ -10,7 +10,7 @@ from pyemd import emd
 from src.models.enums.distance import MetricDistance
 from src.models.enums.notation import Notation
 
-from models.base.application import aplicacion
+from src.models.base.application import aplicacion
 from src.constants.base import ABC_START, INT_ZERO
 
 

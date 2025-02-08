@@ -11,7 +11,7 @@ from src.funcs.system import (
     generar_particiones,
     generar_subsistemas,
 )
-from controllers.manager import Manager
+from src.controllers.manager import Manager
 from src.models.base.sia import SIA
 from src.models.core.system import System
 from src.models.core.solution import Solution
@@ -19,7 +19,7 @@ from src.models.core.solution import Solution
 from src.middlewares.profile import profile, profiler_manager
 from src.middlewares.observer import DebugObserver
 
-from models.base.application import aplicacion
+from src.models.base.application import aplicacion
 from src.constants.base import (
     ACTUAL,
     DUMMY_ARR,

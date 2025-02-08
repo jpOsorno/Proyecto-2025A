@@ -114,9 +114,9 @@ def start_up():
     """Punto de entrada principal"""
     # ABCD #
     estado_inicio = "1000"
-    condiciones = "1110"
-    alcance = "1110"
-    mechanismo = "1110"
+    condiciones =   "1110"
+    alcance =       "1110"
+    mechanismo =    "1110"
 
     config_sistema = Manager(estado_inicial=estado_inicio)
 
