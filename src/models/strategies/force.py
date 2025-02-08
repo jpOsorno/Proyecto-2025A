@@ -80,6 +80,7 @@ class BruteForce(SIA):
             self.sia_dists_marginales,
             DUMMY_ARR,
             ERROR_PARTITION,
+            hablar=False,
         )
 
         small_phi = np.infty
@@ -121,6 +122,7 @@ class BruteForce(SIA):
         solucion_base.perdida = small_phi
         solucion_base.distribucion_particion = mejor_dist_marg
         solucion_base.particion = biparticion_formateada
+        solucion_base.__hablar = True
 
         return solucion_base
 
