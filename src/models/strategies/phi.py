@@ -19,6 +19,8 @@ from src.models.base.application import aplicacion
 
 from src.models.enums.distance import MetricDistance
 from src.constants.base import (
+    DUMMY_ARR,
+    DUMMY_PARTITION,
     STR_ONE,
 )
 
@@ -69,8 +71,8 @@ class Phi(SIA):
         )
         small_phi: float = mip.phi
 
-        repertorio = repertorio_partido = [-1]
-        format = "NO-PARTITION"
+        repertorio = repertorio_partido = DUMMY_ARR
+        format = DUMMY_PARTITION
 
         if mip.repertoire is not None:
             repertorio = mip.repertoire.flatten()
