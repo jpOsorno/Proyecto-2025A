@@ -1,4 +1,3 @@
-from models.strategies.q_nodes import QNodes
 from src.controllers.manager import Manager
 
 from src.models.strategies.force import BruteForce
@@ -16,6 +15,6 @@ def start_up():
 
     ### Ejemplo de solución mediante módulo de fuerza bruta ###
 
-    analizador_fb = QNodes(config_sistema)
+    analizador_fb = BruteForce(config_sistema)
     sia_uno = analizador_fb.aplicar_estrategia(condiciones, alcance, mechanismo)
     print(sia_uno)
