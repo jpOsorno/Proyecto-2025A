@@ -114,10 +114,6 @@ class Solution:
         self.id_voz = voz
         self.hablar = hablar
 
-        if self.hablar:
-            voz = Thread(target=self.__anunciar_solucion)
-            voz.start()
-
     def __obtener_voz_espanol(self, motor: Engine) -> Optional[str]:
         """
         Busca y obtiene un identificador de voz en español del sistema.
@@ -229,7 +225,10 @@ class Solution:
             )
             return f"[ {datos} ]"
 
-        self.__anunciar_solucion()
+        if self.hablar:
+            voz = Thread(target=self.__anunciar_solucion)
+            voz.start()
+
         return f"""{Fore.CYAN}{bilinea}{Style.RESET_ALL}
 
 {Fore.RED}{self.estrategia} fue la estrategia de solucion.{Style.RESET_ALL}

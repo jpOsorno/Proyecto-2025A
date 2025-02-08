@@ -122,7 +122,7 @@ class BruteForce(SIA):
         solucion_base.perdida = small_phi
         solucion_base.distribucion_particion = mejor_dist_marg
         solucion_base.particion = biparticion_formateada
-        solucion_base.__hablar = True
+        solucion_base.hablar = True
 
         return solucion_base
 
