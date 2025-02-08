@@ -43,6 +43,8 @@ Guía de Configuración del Entorno con VSCode
    python -m uv pip install -e .
    ```
 
+   Alternativamente si prefieres usar el archivo de requerimientos este te permitirá seleccionar el mismo o alternativamente ejecuta `py -m pip install -r requirements.txt`, eso te instalará las librerías requeridas.
+
 Si te sale un error que esté asociado con las herramientas de desarrollo de c++, esto ocurre puesto Pyphi utiliza compiladores en Cython/C/C++ para el cálculo de la EMD Causal. Con esto debes debes instalar [Microsoft C++ Build Tools](https://visualstudio.microsoft.com/es/visual-cpp-build-tools/) o si ya lo tienes dale en "Modificar" para posteriormente seleccionar la `MSVCv142 - VS 2019 C++ x64/86 build tools`, con esto debería de arreglarse para siempre.
 
 
@@ -51,7 +53,7 @@ Si te sale un error que esté asociado con las herramientas de desarrollo de c++
 > Configura el proyecto en modo desarrollo (-e)
 > Genera proyecto_2025a.egg-info con metadatos
 
-4. ✅ Verificación Exitosa
+1. ✅ Verificación Exitosa
    ✔️ Sin errores en terminal
    ✔️ Carpeta proyecto_2025a.egg-info creada
    ✔️ Posibilidad de importar dependencias desde Python

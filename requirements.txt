@@ -1,0 +1,7 @@
+numpy<2.0
+pyphi
+openpyxl
+pandas
+pyinstrument
+pyttsx3
+colorama

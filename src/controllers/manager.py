@@ -5,7 +5,7 @@ import os
 
 import numpy as np
 
-from models.base.application import aplicacion
+from src.models.base.application import aplicacion
 from src.constants.base import (
     ABC_START,
     CSV_EXTENSION,
