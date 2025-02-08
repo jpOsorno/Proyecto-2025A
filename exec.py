@@ -1,5 +1,5 @@
 from src.middlewares.profile import profiler_manager
-from models.base.application import aplicacion
+from src.models.base.application import aplicacion
 from src.main import start_up
 
 

@@ -11,7 +11,7 @@ from src.funcs.system import (
     generar_particiones,
     generar_subsistemas,
 )
-from controllers.manager import Manager
+from src.controllers.manager import Manager
 from src.models.base.sia import SIA
 from src.models.core.system import System
 from src.models.core.solution import Solution
@@ -19,7 +19,7 @@ from src.models.core.solution import Solution
 from src.middlewares.profile import profile, profiler_manager
 from src.middlewares.observer import DebugObserver
 
-from models.base.application import aplicacion
+from src.models.base.application import aplicacion
 from src.constants.base import (
     ACTUAL,
     DUMMY_ARR,
@@ -40,8 +40,8 @@ class BruteForce(SIA):
     >>>    self.logger.debuging("debuging message")
     >>>    self.logger.error("Error occurred")
 
-    Así mismo este se almacenará en el archivo con el nombre que hayamos asociado.
-    Este archivo de profilling de extensión HTML lo arrastras hasta tu navegador y se visualizará la depuración del aplicativo a lo largo del tiepmo en dos vistas, tanto temporal como cumulativa sobre coste temporal en subrutinas.
+    Así mismo este se almacenará en el archivo con el nombre que hayamos asociado en el `setup_logger(...)`.
+    Este archivo de profilling de extensión HTML lo arrastras hasta tu navegador y se visualizará la depuración del aplicativo a lo largo del tiempo en dos vistas, temporal y cumulativa sobre el coste temporal en subrutinas.
     """
 
     def __init__(self, config: Manager):
@@ -55,7 +55,7 @@ class BruteForce(SIA):
         )
         self.logger = setup_logger("bruteforce_analysis")
 
-    @profile(context={"type": "bruteforce_analysis"})
+    # @profile(context={"type": "bruteforce_analysis"}) # Descomentame y revisa el directorio `review/profiling/`! #
     def aplicar_estrategia(self, condiciones: str, alcance: str, mecanismo: str):
         """
         Análisis por fuerza brutal sobre una red específica para un sistema candidato llevado a un subsistema determinado por el alcance y mecanismo indicado por el usuario.
@@ -80,6 +80,7 @@ class BruteForce(SIA):
             self.sia_dists_marginales,
             DUMMY_ARR,
             ERROR_PARTITION,
+            hablar=False,
         )
 
         small_phi = np.infty
@@ -121,6 +122,9 @@ class BruteForce(SIA):
         solucion_base.perdida = small_phi
         solucion_base.distribucion_particion = mejor_dist_marg
         solucion_base.particion = biparticion_formateada
+        solucion_base.hablar = True
+
+        self.logger.info(small_phi, mejor_dist_marg, biparticion_formateada, True)
 
         return solucion_base
 
@@ -128,13 +132,14 @@ class BruteForce(SIA):
     def analizar_completamente_una_red(self) -> None:
         """
         Se prepara el directorio de salida donde almacenaremos el análisis completo de una red específica.
-        Este análisis consiste de para una red de N elementos en dos tiempos `t_0` y `t_1` para un único estado inicial, se creen todos los `{2^N}-1` factibles sistemas candidatos, posteriormente a cada uno sus `2^{m+n}` posibles biparticiones, excluyendo escenarios con alcances vacíos y finalmente cada bipartición de las `2^{m+n-1}-1`factibles
+        Este análisis consiste de para una red de N elementos en dos tiempos `t_0` y `t_1` para un único estado inicial, se crean todos los `{2^N}-1` factibles sistemas candidatos, posteriormente a cada uno sus `2^{m+n}` posibles biparticiones, excluyendo escenarios con alcances vacíos y finalmente cada bipartición de las `2^{m+n-1}-1` factibles.
         """
         self.sia_loader.output_dir.mkdir(parents=True, exist_ok=True)
 
         tpm = self.sia_cargar_tpm()
         initial_state = np.array(
-            [canal for canal in self.sia_loader.estado_inicial], dtype=np.int8
+            [canal for canal in self.sia_loader.estado_inicial],
+            dtype=np.int8,
         )
         # system = System(tpm, initial_state, debug_observer)
         system = System(tpm, initial_state)

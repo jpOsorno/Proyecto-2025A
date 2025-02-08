@@ -2,7 +2,7 @@
 
 Base del proyecto para dar desarrollo a estrategias más elaboradas.
 
-Para clonar el repositorio con github debemos tener GIT y aplicar el comando sobre un directorio cómodo para guardar el proyecto `git clone https://github.com/Complexum/Proyecto-2025A .`.
+Para clonar el repositorio con github debemos tener GIT y aplicar el comando sobre un directorio cómodo para guardar el proyecto `git clone https://github.com/Complexum/Proyecto-2025A .` y poder comenzar con nuestra asombrosa aventura!
 
 ---
 
@@ -14,41 +14,46 @@ Guía de Configuración del Entorno con VSCode
 
 #### 📋 **Requisitos Mínimos**
 - ![PowerShell](https://img.shields.io/badge/-PowerShell-blue?style=flat-square) Terminal PowerShell/Bash.
-- ![VSCode](https://img.shields.io/badge/-VSCode-007ACC?logo=visualstudiocode&style=flat-square) Visual Studio Code instalado
-- ![Python](https://img.shields.io/badge/-Python%203.11.9-3776AB?logo=python&style=flat-square) Versión python 3.11.9 (o similar)
+- ![VSCode](https://img.shields.io/badge/-VSCode-007ACC?logo=visualstudiocode&style=flat-square) Visual Studio Code instalado.
+- ![Python](https://img.shields.io/badge/-Python%203.9.13-3776AB?logo=python&style=flat-square) Versión python 3.9.13 (o similar).
 
 ---
 
 #### 🚀 **Configuración**
 
 1. **🔥 Crear Entorno Virtual**  
-   - Abre VSCode y presiona `Ctrl + Shift + P`
+   - Abre VSCode y presiona `Ctrl + Shift + P`.
    - Busca y selecciona:  
-     `Python: Create Environment` → `Venv` → `Python 3.11.9 64-bit` y si es el de la `(Microsoft Store)` mejor.
-   - ![Wait](https://img.shields.io/badge/-ESPERA_5_segundos-important) Hasta que aparezca la carpeta `.venv`.
+     `Python: Create Environment` → `Venv` → `Python 3.9.13 64-bit` y si es el de la `(Microsoft Store)` mejor. En este paso, es usualmente recomendable el hacer instalación del Virtual Environment mediante el archivo de requerimientos, no obstante si deseas jugartela a una instalación más eficiente y controlada _(no aplica a todos)_, puedes usar UV.
+   - ![Wait](https://img.shields.io/badge/-ESPERA_5_segundos-important) Hasta que aparezca la carpeta `.venv`
 
 2. **🔄 Reinicio**
    - Cierra y vuelve a abrir VSCode (obligado ✨).
    - Verifica que en la terminal veas `(.venv)` al principio  
      *(Si no: Ejecuta `.\.venv\Scripts\activate` manualmente)*
 
-3. **💣 Instalación con UV**  
-   En la terminal PowerShell (.venv activado): 
-   Primero instalamos `uv` con 
-   ```powershell
-   pip install uv
-   ```
-   Procedemos a instalar las librerías con
-   ```powershell
-   python -m uv pip install -e .
-   ```
+
+> **💣 Instalación opcional con UV**  
+>   En la terminal PowerShell (.venv activado): 
+>   Primero instalamos `uv` con 
+>   ```powershell
+>   pip install uv
+>   ```
+>   Procedemos a instalar las librerías con
+>   ```powershell
+>   python -m uv pip install -e .
+>   ```
+
+
+Si te sale un error que esté asociado con las herramientas de desarrollo de c++, esto ocurre puesto Pyphi utiliza compiladores en Cython/C/C++ para el cálculo de la EMD Causal. Con esto debes debes instalar [Microsoft C++ Build Tools](https://visualstudio.microsoft.com/es/visual-cpp-build-tools/) o si ya lo tienes dale en "Modificar" para posteriormente seleccionar la `MSVCv142 - VS 2019 C++ x64/86 build tools`, con esto debería de arreglarse para siempre.
+
 
 > **Este comando:**
 > Instala dependencias de pyproject.toml
 > Configura el proyecto en modo desarrollo (-e)
 > Genera proyecto_2025a.egg-info con metadatos
 
-4. ✅ Verificación Exitosa
+1. ✅ Verificación Exitosa
    ✔️ Sin errores en terminal
    ✔️ Carpeta proyecto_2025a.egg-info creada
    ✔️ Posibilidad de importar dependencias desde Python
@@ -60,7 +65,7 @@ Guía de Configuración del Entorno con VSCode
 
 ### Ejecución del programa
 
-Abres una terminal, escribes `py e` tabulas y das enter, _así de simple_! Alternativamente escribiendo en terminal `python .\exec.py` deberás ejecutar una muestra del aplicativo para una Red de 04 nodos, generarando un análisis completo sobre la misma, de tal forma que se obtendrán varios artefactos tras la ejecución
+Abres una terminal, escribes `py e` tabulas y das enter, _así de simple_! Alternativamente escribiendo en terminal `python .\exec.py` deberás ejecutar una muestra del aplicativo para una Red de 04 nodos, generarando un análisis completo sobre la misma, de tal forma que se obtendrán varios artefactos tras la ejecución.
 
 Por otro lado puedes realizar un anális específico sobre una red usando el método `aplicar_estrategia(...)` con los parámetros respectivos.
 
@@ -109,18 +114,17 @@ def start_up():
     """Punto de entrada principal"""
     # ABCD #
     estado_inicio = "1000"
-    condiciones = "1110"
-    alcance = "1110"
-    mechanismo = "1110"
+    condiciones =   "1110"
+    alcance =       "1110"
+    mechanismo =    "1110"
 
     config_sistema = Manager(estado_inicial=estado_inicio)
 
-    ### Ejemplo de solución mediante módulo de pyphi ###
+    ### Ejemplo de solución mediante módulo de fuerza bruta ###
 
     analizador_fb = BruteForce(config_sistema)
     sia_uno = analizador_fb.aplicar_estrategia(condiciones, alcance, mechanismo)
     print(sia_uno)
-
 ```
 
 Como se aprecia cada variable está asociada con una posición, de forma que las variables a **mantener** tienen el bit en uno (1), mientras que las que querremos **descartar** las enviaremos en cero (0).

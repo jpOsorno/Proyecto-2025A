@@ -6,7 +6,7 @@ import numpy as np
 from threading import Thread
 from typing import Optional
 
-from models.base.application import aplicacion
+from src.models.base.application import aplicacion
 
 # Iniciar colorama
 init()
@@ -112,10 +112,7 @@ class Solution:
         self.distribucion_particion = distribucion_particion
         self.particion = particion
         self.id_voz = voz
-
-        if hablar:
-            voz = Thread(target=self.__anunciar_solucion)
-            voz.start()
+        self.hablar = hablar
 
     def __obtener_voz_espanol(self, motor: Engine) -> Optional[str]:
         """
@@ -214,7 +211,7 @@ class Solution:
                 - Mejor partición encontrada en magenta
                 - Elementos decorativos en cyan
 
-        Note:
+        Notes:
         -----
             Utiliza la biblioteca colorama para el formato de colores, permitiedo una visualización clara por terminal.
         """
@@ -227,6 +224,10 @@ class Solution:
                 for x in dist
             )
             return f"[ {datos} ]"
+
+        if self.hablar:
+            voz = Thread(target=self.__anunciar_solucion)
+            voz.start()
 
         return f"""{Fore.CYAN}{bilinea}{Style.RESET_ALL}
 

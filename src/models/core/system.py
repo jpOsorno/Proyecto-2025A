@@ -6,7 +6,7 @@ from src.middlewares.observer import SystemObserver
 from src.models.enums.notation import Notation
 from src.models.core.ncube import NCube
 
-from models.base.application import aplicacion
+from src.models.base.application import aplicacion
 
 from src.constants.base import COLS_IDX
 

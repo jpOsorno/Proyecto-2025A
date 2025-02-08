@@ -4,16 +4,13 @@ from src.middlewares.profile import profiler_manager, profile
 from src.funcs.format import fmt_biparte_q
 from controllers.manager import Manager
 from src.models.base.sia import SIA
-from copy import copy
 
 from src.models.core.solution import Solution
 from src.constants.base import (
-    ACTIVOS,
     EFECTO,
     ACTUAL,
     INFTY_NEG,
     INFTY_POS,
-    INT_ONE,
     LAST_IDX,
 )
 
@@ -296,10 +293,7 @@ class QNodes(SIA):
             )
             Esto lo hice así para hacer almacenamiento externo de la emd individual y su distribución marginal en las particiones candidatas.
         """
-
-        # tiempos = copy(self.tiempos)
         emd_delta = INFTY_NEG
-
         temporal = [[], []]
 
         if isinstance(deltas, tuple):
