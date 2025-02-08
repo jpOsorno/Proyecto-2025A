@@ -124,19 +124,22 @@ class BruteForce(SIA):
         solucion_base.particion = biparticion_formateada
         solucion_base.hablar = True
 
+        self.logger.info(small_phi, mejor_dist_marg, biparticion_formateada, True)
+
         return solucion_base
 
     @profile(context={"type": "bruteforce_full_analysis"})
     def analizar_completamente_una_red(self) -> None:
         """
         Se prepara el directorio de salida donde almacenaremos el análisis completo de una red específica.
-        Este análisis consiste de para una red de N elementos en dos tiempos `t_0` y `t_1` para un único estado inicial, se creen todos los `{2^N}-1` factibles sistemas candidatos, posteriormente a cada uno sus `2^{m+n}` posibles biparticiones, excluyendo escenarios con alcances vacíos y finalmente cada bipartición de las `2^{m+n-1}-1`factibles
+        Este análisis consiste de para una red de N elementos en dos tiempos `t_0` y `t_1` para un único estado inicial, se crean todos los `{2^N}-1` factibles sistemas candidatos, posteriormente a cada uno sus `2^{m+n}` posibles biparticiones, excluyendo escenarios con alcances vacíos y finalmente cada bipartición de las `2^{m+n-1}-1` factibles.
         """
         self.sia_loader.output_dir.mkdir(parents=True, exist_ok=True)
 
         tpm = self.sia_cargar_tpm()
         initial_state = np.array(
-            [canal for canal in self.sia_loader.estado_inicial], dtype=np.int8
+            [canal for canal in self.sia_loader.estado_inicial],
+            dtype=np.int8,
         )
         # system = System(tpm, initial_state, debug_observer)
         system = System(tpm, initial_state)

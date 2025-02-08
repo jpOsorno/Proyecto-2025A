@@ -120,7 +120,7 @@ def start_up():
 
     config_sistema = Manager(estado_inicial=estado_inicio)
 
-    ### Ejemplo de solución mediante módulo de pyphi ###
+    ### Ejemplo de solución mediante módulo de fuerza bruta ###
 
     analizador_fb = BruteForce(config_sistema)
     sia_uno = analizador_fb.aplicar_estrategia(condiciones, alcance, mechanismo)

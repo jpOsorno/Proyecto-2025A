@@ -221,15 +221,31 @@ def estados_binarios(n: int):
 #     return product(rango, repeat=veces)
 
 
+from datetime import datetime
+from pathlib import Path
+import logging
+import shutil
+
+
 def setup_logger(name: str) -> logging.Logger:
     """
-    Configura un logger con formato detallado y salida a archivo.
+    Configura un logger con formato detallado y salida a archivo, manteniendo
+    una copia del último log en la raíz del directorio logs para acceso rápido.
+
+    El sistema organiza los logs en una estructura jerárquica:
+    - logs/
+        - latest_{name}.log  <- Copia del último log para acceso rápido
+        - 2025/              <- Año
+            - 02/            <- Mes
+                - 08/        <- Día
+                    - 14hrs/ <- Hora
+                        - {name}.log
 
     Args:
         name: Nombre base para el archivo de log
 
     Returns:
-        Logger configurado
+        Logger configurado con salida a archivo y formato detallado
     """
     # Crear directorio base logs si no existe
     base_log_dir = Path("logs")
@@ -238,23 +254,28 @@ def setup_logger(name: str) -> logging.Logger:
     # Obtener fecha y hora actual
     current_time = datetime.now()
 
-    # Crear subdirectorio con la fecha
-    date_dir = base_log_dir / current_time.strftime("%d_%m_%Y")
-    date_dir.mkdir(exist_ok=True)
+    # Crear estructura jerárquica de directorios
+    year_dir = base_log_dir / current_time.strftime("%Y")
+    month_dir = year_dir / current_time.strftime("%m")
+    day_hour_dir = month_dir / current_time.strftime("%d_%Hhrs")
 
-    # Crear subdirectorio con la hora
-    hour_dir = date_dir / f"{current_time.strftime('%H')}hrs"
-    hour_dir.mkdir(exist_ok=True)
+    # Crear directorios en orden
+    for directory in [year_dir, month_dir, day_hour_dir]:
+        directory.mkdir(exist_ok=True)
 
-    # Crear archivo de log
-    log_file = hour_dir / f"{name}.log"
+    # Definir rutas de archivos
+    detailed_log_file = day_hour_dir / f"{name}.log"
+    latest_log_file = base_log_dir / f"latest_{name}.log"
 
     # Configurar logger
     logger = logging.getLogger(name)
     logger.setLevel(logging.DEBUG)
 
-    # Handler para archivo
-    file_handler = logging.FileHandler(log_file, mode="w")
+    # Limpiar handlers existentes para evitar duplicados
+    logger.handlers.clear()
+
+    # Handler para archivo detallado
+    file_handler = logging.FileHandler(detailed_log_file, mode="w")
     file_handler.setLevel(logging.DEBUG)
 
     # Formato detallado
@@ -263,5 +284,18 @@ def setup_logger(name: str) -> logging.Logger:
     )
     file_handler.setFormatter(formatter)
     logger.addHandler(file_handler)
+
+    # Crear un segundo handler para el archivo latest
+    latest_handler = logging.FileHandler(latest_log_file, mode="w")
+    latest_handler.setLevel(logging.DEBUG)
+    latest_handler.setFormatter(formatter)
+    logger.addHandler(latest_handler)
+
+    # Agregar mensaje inicial con metadata
+    logger.info(
+        f"Log iniciado en {current_time.strftime('%Y-%m-%d %H:%M:%S')}\n"
+        f"Ubicacion completa: {detailed_log_file}\n"
+        f"Copia rapida: {latest_log_file}"
+    )
 
     return logger
