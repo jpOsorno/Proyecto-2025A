@@ -44,10 +44,6 @@ Guía de Configuración del Entorno con VSCode
 >   python -m uv pip install -e .
 >   ```
 
-
-Si te sale un error que esté asociado con las herramientas de desarrollo de c++, esto ocurre puesto Pyphi utiliza compiladores en Cython/C/C++ para el cálculo de la EMD Causal. Con esto debes debes instalar [Microsoft C++ Build Tools](https://visualstudio.microsoft.com/es/visual-cpp-build-tools/) o si ya lo tienes dale en "Modificar" para posteriormente seleccionar la `MSVCv142 - VS 2019 C++ x64/86 build tools`, con esto debería de arreglarse para siempre.
-
-
 > **Este comando:**
 > Instala dependencias de pyproject.toml
 > Configura el proyecto en modo desarrollo (-e)
@@ -68,6 +64,8 @@ Si te sale un error que esté asociado con las herramientas de desarrollo de c++
 Abres una terminal, escribes `py e` tabulas y das enter, _así de simple_! Alternativamente escribiendo en terminal `python .\exec.py` deberás ejecutar una muestra del aplicativo para una Red de 04 nodos, generarando un análisis completo sobre la misma, de tal forma que se obtendrán varios artefactos tras la ejecución.
 
 Por otro lado puedes realizar un anális específico sobre una red usando el método `aplicar_estrategia(...)` con los parámetros respectivos.
+
+Si te sale un error que esté asociado con las herramientas de desarrollo de c++, esto ocurre puesto Pyphi utiliza compiladores en Cython/C/C++ para el cálculo de la EMD Causal. Con esto debes debes instalar [Microsoft C++ Build Tools](https://visualstudio.microsoft.com/es/visual-cpp-build-tools/) o si ya lo tienes dale en "Modificar" para posteriormente seleccionar la `MSVCv142 - VS 2019 C++ x64/86 build tools`, con esto debería de arreglarse para siempre.
 
 Al final podemos realizar ejecución desde `py exec` y pasar a corregir los errores de la librería Pyphi (en el documento `.docs\errors.md` encuentras la guía de bolsillo para arreglar estos problemas).
 
