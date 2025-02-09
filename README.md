@@ -77,7 +77,7 @@ Al final podemos realizar ejecución desde `py exec` y pasar a corregir los erro
 from src.controllers.manager import Manager
 from src.models.strategies.force import BruteForce
 
-def start_up():
+def iniciar():
     """Punto de entrada principal"""
     # ABCD #
     estado_inicio = "1000"
@@ -105,7 +105,7 @@ Por ejemplo, una ejecución con **Pyphi** para una red específica se vería as�
 from src.controllers.manager import Manager
 from src.models.strategies.phi import Phi
 
-def start_up():
+def iniciar():
     """Punto de entrada principal"""
                    # ABCD #
     estado_inicio = "1000"
@@ -149,7 +149,7 @@ Si deseas realizar un análisis completo de una red mediante fuerza bruta, puede
 from src.controllers.manager import Manager
 from src.models.strategies.force import BruteForce
 
-def start_up():
+def iniciar():
     """Punto de entrada principal"""
                    # ABCD #
     estado_inicio = "1000"
