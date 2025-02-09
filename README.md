@@ -162,4 +162,6 @@ Donde sobre un sistema de nodos $V=\{A,B,C,D\}$ tomamos un sistema candidato $V_
 
 En el archivo de pruebas en el directorio `.tests` encontrarás el documento excel con las pruebas a resolver mediante uso del aplicativo.
 
+Si deseas realizar pruebas con una matriz superior a las ya diseñadas, puedes hacer uso del `Manager` para generar una nueva, de forma tal que usando su método `generar_red(dimensiones: int)` quedará almacenada en el directorio de samples para su uso posterior.
+
 Para finalizar cabe recordar que el repositorio está atento a cambios o mejoras propuestas por parte de los cursantes, de forma que es oportuno realizar `git pull origin main` para tener siempre la versión más reciente 🫶!

@@ -1,10 +1,12 @@
 from src.funcs.base import setup_logger
-from src.models.strategies.q_nodes import QNodes
 from src.controllers.manager import Manager
 import time
 
-from testing.data import NUM_NODOS, PRUEBAS, RED_10
-from testing.funcs import cargar_resultados_existentes, guardar_resultados
+from src.models.strategies.q_nodes import QNodes
+from src.models.strategies.phi import Phi
+
+from src.testing.data import NUM_NODOS, PRUEBAS, RED_10
+from src.testing.funcs import cargar_resultados_existentes, guardar_resultados
 
 
 def iniciar():
@@ -26,7 +28,7 @@ def iniciar():
                 continue  # Si ya está guardado, lo saltamos
 
             alcance, mecanismo = prueba
-            analizador_q = QNodes(config_sistema)
+            analizador_q = Phi(config_sistema)
 
             inicio_tiempo = time.time()
             solucion = analizador_q.aplicar_estrategia(condiciones, alcance, mecanismo)
@@ -39,7 +41,7 @@ def iniciar():
 
             # Guardar inmediatamente para minimizar pérdida en caso de crash
             guardar_resultados(soluciones)
-        break  # Eliminarlo cuando estés listo para ejecutar todo
+        # break  # Eliminarlo cuando estés listo para ejecutar todo
 
     logger.debug(f"{soluciones=}")
 
