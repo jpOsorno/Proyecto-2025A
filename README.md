@@ -69,27 +69,26 @@ Si te sale un error que esté asociado con las herramientas de desarrollo de c++
 
 Al final podemos realizar ejecución desde `py exec` y pasar a corregir los errores de la librería Pyphi (en el documento `.docs\errors.md` encuentras la guía de bolsillo para arreglar estos problemas).
 
-> Tras ello podrás realizar distintas pruebas en el aplicativo, por ejemplo tenemos:
-
 > Si quisiéramos hacer una prueba con un subsistema **específico** para una red utilizando fuerza bruta, hacemos lo siguiente:
 
 ```py
 from src.controllers.manager import Manager
 from src.models.strategies.force import BruteForce
 
+
 def iniciar():
     """Punto de entrada principal"""
-    # ABCD #
+                   # ABCD #
     estado_inicio = "1000"
     condiciones =   "1110"
     alcance =       "1110"
-    mechanismo =    "1110"
+    mecanismo =     "1110"
 
     config_sistema = Manager(estado_inicial=estado_inicio)
 
     ### Ejemplo de solución mediante módulo de fuerza bruta ###
     analizador_fb = BruteForce(config_sistema)
-    sia_uno = analizador_fb.aplicar_estrategia(condiciones, alcance, mechanismo)
+    sia_uno = analizador_fb.aplicar_estrategia(condiciones, alcance, mecanismo)
     print(sia_uno)
 ```
 
@@ -110,14 +109,14 @@ def iniciar():
                    # ABCD #
     estado_inicio = "1000"
     condiciones =   "1110"
-    mechanismo =    "0110"
     alcance =       "1010"
+    mecanismo =     "0110"
 
     config_sistema = Manager(estado_inicial=estado_inicio)
 
     ### Ejemplo de solución mediante Pyphi ###
     analizador_fi = Phi(config_sistema)
-    sia_dos = analizador_fi.aplicar_estrategia(condiciones, alcance, mechanismo)
+    sia_dos = analizador_fi.aplicar_estrategia(condiciones, alcance, mecanismo)
     print(sia_dos)
 ```
 
