@@ -223,7 +223,7 @@ class Solution:
                 f"{Fore.WHITE}{x:.4f}" if x > 0 else f"{Fore.LIGHTBLACK_EX}0."
                 for x in dist
             )
-            return f"[ {datos} ]"
+            return f"[ {datos} {Fore.WHITE}]"
 
         if self.hablar:
             voz = Thread(target=self.__anunciar_solucion)

@@ -7,7 +7,7 @@ from testing.data import NUM_NODOS, PRUEBAS, RED_10
 from testing.funcs import cargar_resultados_existentes, guardar_resultados
 
 
-def start_up():
+def iniciar():
     """Punto de entrada principal"""
     red_usada = RED_10
     muestras: list[list[tuple[str, str]]] = red_usada[PRUEBAS]

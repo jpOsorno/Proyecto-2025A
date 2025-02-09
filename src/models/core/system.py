@@ -148,7 +148,7 @@ class System:
         self,
         alcance_dims: NDArray[np.int8],
         mecanismo_dims: NDArray[np.int8],
-    ) -> "System":
+    ):
         """
         Permite substraer una serie de elementos a partir de un sistema completo o sun sisteam candidato tanto en el futuro/alcance como el presente/mecanismo, logrando así la generación de un subsistema.
 
