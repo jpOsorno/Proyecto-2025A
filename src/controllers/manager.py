@@ -32,7 +32,6 @@ class Manager:
     estado_inicial: str
     pagina: str = aplicacion.pagina_sample_network
     ruta_base: Path = Path(SAMPLES_PATH)
-    
 
     @property
     def tpm_filename(self) -> Path:
@@ -47,8 +46,8 @@ class Manager:
         )
 
     def generar_red(self, dimensiones: int, datos_discretos: bool = True) -> str:
-        np.random.seed(aplicacion.semilla_numpy) 
-        
+        np.random.seed(aplicacion.semilla_numpy)
+
         if dimensiones < 1:
             raise ValueError("Las dimensiones deben ser positivas")
 
