@@ -5,13 +5,13 @@ import time
 from src.models.strategies.q_nodes import QNodes
 from src.models.strategies.phi import Phi
 
-from src.testing.data import NUM_NODOS, PRUEBAS, RED_10
+from src.testing.data import NUM_NODOS, PRUEBAS, RED_15
 from src.testing.funcs import cargar_resultados_existentes, guardar_resultados
 
 
 def iniciar():
     """Punto de entrada principal"""
-    red_usada = RED_10
+    red_usada = RED_15
     muestras: list[list[tuple[str, str]]] = red_usada[PRUEBAS]
     num_nodos: int = red_usada[NUM_NODOS]
 
