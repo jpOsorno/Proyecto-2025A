@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+import time
 from src.funcs.base import setup_logger
 
 import numpy as np
@@ -8,7 +9,7 @@ from src.middlewares.observer import DebugObserver
 from src.controllers.manager import Manager
 from src.models.core.system import System
 
-from src.constants.base import COLON_DELIM, STR_ZERO
+from src.constants.base import COLON_DELIM, FLOAT_ZERO, STR_ZERO
 
 
 class SIA(ABC):
@@ -31,6 +32,7 @@ class SIA(ABC):
 
         self.sia_subsistema: System
         self.sia_dists_marginales: NDArray[np.float32]
+        self.sia_tiempo_inicio: float = FLOAT_ZERO
 
     @abstractmethod
     def aplicar_estrategia(self):
@@ -97,6 +99,7 @@ class SIA(ABC):
 
         self.sia_subsistema = subsistema
         self.sia_dists_marginales = subsistema.distribucion_marginal()
+        self.sia_tiempo_inicio = time.time()
 
     def chequear_parametros(self, candidato: str, futuro: str, presente: str):
         return not (

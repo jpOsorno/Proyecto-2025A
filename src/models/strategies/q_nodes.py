@@ -1,3 +1,4 @@
+import time
 import numpy as np
 from src.funcs.base import emd_efecto, ABECEDARY, setup_logger
 from src.middlewares.profile import profiler_manager, profile
@@ -134,6 +135,7 @@ class QNodes(SIA):
             perdida=self.memoria_particiones[mip][0],
             distribucion_subsistema=self.sia_dists_marginales,
             distribucion_particion=self.memoria_particiones[mip][1],
+            tiempo_total=time.time() - self.sia_tiempo_inicio,
             particion=fmt_mip,
         )
 
@@ -206,8 +208,8 @@ class QNodes(SIA):
             for j in range(len(deltas_ciclo) - 1):
                 emd_local = 1e5
                 indice_mip: int
-                for k in range(len(deltas_ciclo)):
 
+                for k in range(len(deltas_ciclo)):
                     emd_union, emd_delta, dist_marginal_delta = self.funcion_submodular(
                         deltas_ciclo[k], omegas_ciclo
                     )

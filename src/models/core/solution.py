@@ -1,3 +1,4 @@
+import time
 from colorama import init, Fore, Style
 import pyttsx3
 from pyttsx3.engine import Engine
@@ -6,6 +7,7 @@ import numpy as np
 from threading import Thread
 from typing import Optional
 
+from src.constants.base import FLOAT_ZERO
 from src.models.base.application import aplicacion
 
 # Iniciar colorama
@@ -99,6 +101,7 @@ class Solution:
         distribucion_subsistema: np.ndarray,
         distribucion_particion: np.ndarray,
         particion: str,
+        tiempo_total: float = FLOAT_ZERO,
         hablar: bool = True,
         voz: Optional[str] = None,
     ) -> None:
@@ -111,6 +114,7 @@ class Solution:
         self.distribucion_subsistema = distribucion_subsistema
         self.distribucion_particion = distribucion_particion
         self.particion = particion
+        self.tiempo_ejecucion = tiempo_total
         self.id_voz = voz
         self.hablar = hablar
 
@@ -190,7 +194,7 @@ class Solution:
 
             mensaje = f"Solución encontrada con {self.estrategia}." + (
                 f"El valor de fi es de {self.perdida:.2f}"
-                if self.perdida > 0
+                if self.perdida > FLOAT_ZERO
                 else "No hubo pérdida."
             )
             motor.say(mensaje)
@@ -229,23 +233,26 @@ class Solution:
             voz = Thread(target=self.__anunciar_solucion)
             voz.start()
 
-        return f"""{Fore.CYAN}{bilinea}{Style.RESET_ALL}
+        return f"""{Fore.CYAN}{bilinea}
 
-{Fore.RED}{self.estrategia} fue la estrategia de solucion.{Style.RESET_ALL}
+{Fore.RED}{self.estrategia} fue la estrategia de solucion.
 
-{Fore.BLUE}Distancia métrica utilizada:{Style.RESET_ALL}
-{aplicacion.distancia_metrica}
-{Fore.BLUE}Notación utilizada en indexación:{Style.RESET_ALL}
-{aplicacion.notacion}
+{Fore.BLUE}Distancia métrica utilizada:
+{Style.RESET_ALL}{aplicacion.distancia_metrica}
+{Fore.BLUE}Notación utilizada en indexación:
+{Style.RESET_ALL}{aplicacion.notacion}
 
-{Fore.YELLOW}Distribución del Subsistema:{Style.RESET_ALL}
-{formatear_distribucion(self.distribucion_subsistema)}
-{Fore.YELLOW}Distribución de la Partición:{Style.RESET_ALL}
-{formatear_distribucion(self.distribucion_particion)}
+{Fore.YELLOW}Distribución del Subsistema:
+{Style.RESET_ALL}{formatear_distribucion(self.distribucion_subsistema)}
+{Fore.YELLOW}Distribución de la Partición:
+{Style.RESET_ALL}{formatear_distribucion(self.distribucion_particion)}
 
-{Fore.YELLOW}Mejor Bi-Partición:{Style.RESET_ALL}
-{Fore.MAGENTA}{self.particion}{Style.RESET_ALL}
-{Fore.GREEN}φ = {self.perdida:.4f}{Style.RESET_ALL}
+{Fore.YELLOW}Mejor Bi-Partición:
+{Fore.MAGENTA}{self.particion}
+{Fore.GREEN}φ = {self.perdida:.4f}
+
+{Fore.BLUE}Tiempos de ejecución:
+{Fore.MAGENTA}Segundos: {self.tiempo_ejecucion:.4f}, Minutos: {self.tiempo_ejecucion/60:.1f}, Horas: {self.tiempo_ejecucion/3600:.2f}
 
 {Fore.CYAN}{trilinea}{Style.RESET_ALL}"""
 

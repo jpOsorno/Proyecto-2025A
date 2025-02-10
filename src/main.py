@@ -1,4 +1,5 @@
 from src.controllers.manager import Manager
+
 from src.models.strategies.force import BruteForce
 
 

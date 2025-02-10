@@ -1,3 +1,4 @@
+import time
 import numpy as np
 from src.funcs.base import ABECEDARY, lil_endian, setup_logger
 from src.funcs.format import fmt_biparticion
@@ -38,6 +39,7 @@ class Phi(SIA):
 
     @profile(context={"type": "pyphi_analysis"})
     def aplicar_estrategia(self, condiciones: str, alcance: str, mecanismo: str):
+        self.sia_tiempo_inicio = time.time()
         pyphi.config.WELCOME_OFF = "yes"
         estado_inicial = tuple(int(s) for s in self.sia_loader.estado_inicial)
         tamanho = len(estado_inicial)
@@ -100,5 +102,6 @@ class Phi(SIA):
             perdida=small_phi,
             distribucion_subsistema=repertorio,
             distribucion_particion=repertorio_partido,
+            tiempo_total=time.time() - self.sia_tiempo_inicio,
             particion=format,
         )

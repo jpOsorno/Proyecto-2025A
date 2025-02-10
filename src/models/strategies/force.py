@@ -1,3 +1,4 @@
+import time
 from typing import Callable
 import pandas as pd
 import numpy as np
@@ -121,6 +122,7 @@ class BruteForce(SIA):
         solucion_base.perdida = small_phi
         solucion_base.distribucion_particion = mejor_dist_marg
         solucion_base.particion = biparticion_formateada
+        solucion_base.tiempo_ejecucion = time.time() - self.sia_tiempo_inicio
         solucion_base.hablar = True
 
         self.logger.info(small_phi, mejor_dist_marg, biparticion_formateada, True)
