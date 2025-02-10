@@ -254,7 +254,7 @@ class Solution:
 
 {Fore.YELLOW}Mejor Bi-Partición:
 {Fore.MAGENTA}{self.particion}
-{Fore.GREEN}Pérdida mínima ( φ ) = {self.perdida:.4f}
+{Fore.GREEN}Perdida mínima ( φ ) = {self.perdida:.4f}
 
 {Fore.BLUE}Tiempos de ejecución:
 {Fore.WHITE}Horas: {tiempo_h}, Minutos: {tiempo_m}, Segundos: {tiempo_s}
