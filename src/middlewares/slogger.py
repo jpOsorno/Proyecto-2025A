@@ -5,6 +5,10 @@ from datetime import datetime
 from functools import wraps
 from typing import Any, Callable
 
+from colorama import init
+
+from src.constants.base import LOGS_PATH
+
 
 class SafeLogger:
     """Logger seguro/robusto para manejar cualquier tipo de entrada y caracteres especiales."""
@@ -23,19 +27,16 @@ class SafeLogger:
 
     def _safe_format(self, *args, **kwargs) -> str:
         """Formatea los argumentos de forma segura."""
-        # Maneja args
         args_str = " ".join(self._safe_str(arg) for arg in args)
-
-        # Maneja kwargs
         if kwargs:
             kwargs_str = " ".join(f"{k}={self._safe_str(v)}" for k, v in kwargs.items())
             return f"{args_str} {kwargs_str}"
         return args_str
 
     def __setup_logger(self, name: str) -> logging.Logger:
-        """Configura el logger con manejo de encodings."""
-        # Crear estructura de directorios
-        base_log_dir = Path("logs")
+        """Configura el logger con manejo de encodings y formateo personalizado."""
+        # Crear estructura de directorios para logs detallados
+        base_log_dir = Path(LOGS_PATH)
         base_log_dir.mkdir(exist_ok=True)
 
         current_time = datetime.now()
@@ -45,29 +46,43 @@ class SafeLogger:
         hour_dir = date_dir / f"{current_time.strftime('%H')}hrs"
         hour_dir.mkdir(exist_ok=True)
 
-        log_file = hour_dir / f"{name}.log"
+        # Archivo para logs detallados (estructura anidada por fecha/hora)
+        detailed_log_file = hour_dir / f"{name}.log"
+        # Archivo para el último log (en la raíz, se sobrescribe en cada ejecución)
+        last_log_file = base_log_dir / f"last_{name}.log"
 
-        # Configurar logger
         logger = logging.getLogger(name)
         logger.setLevel(logging.DEBUG)
+        logger.handlers.clear()
 
-        # Handler para archivo con encoding UTF-8
-        file_handler = logging.FileHandler(log_file, mode="w", encoding="utf-8")
-        file_handler.setLevel(logging.DEBUG)
-
-        # Handler para consola
-        console_handler = logging.StreamHandler(sys.stdout)
-        console_handler.setLevel(logging.INFO)
-
-        # Formato detallado
-        formatter = logging.Formatter(
-            "%(asctime)s - %(name)s - %(levelname)s\n%(message)s\n"
+        # Formatter para archivos (sin colores)
+        plain_formatter = logging.Formatter(
+            "%(levelname)s (%(asctime)s):\n %(message)s", datefmt="time: %H:%M:%S"
         )
+        # Formatter para consola (con colores)
+        colored_formatter = ColorFormatter(datefmt="time: %H:%M:%S")
 
-        file_handler.setFormatter(formatter)
-        console_handler.setFormatter(formatter)
+        # Handler para archivo detallado
+        detailed_file_handler = logging.FileHandler(
+            detailed_log_file, mode="w", encoding="utf-8"
+        )
+        detailed_file_handler.setLevel(logging.DEBUG)
+        detailed_file_handler.setFormatter(plain_formatter)
 
-        logger.addHandler(file_handler)
+        # Handler para el archivo "last" (última ejecución)
+        last_file_handler = logging.FileHandler(
+            last_log_file, mode="w", encoding="utf-8"
+        )
+        last_file_handler.setLevel(logging.DEBUG)
+        last_file_handler.setFormatter(plain_formatter)
+
+        # Handler para consola: se muestran solo mensajes ERROR o superiores
+        console_handler = logging.StreamHandler(sys.stdout)
+        console_handler.setLevel(logging.ERROR)
+        console_handler.setFormatter(colored_formatter)
+
+        logger.addHandler(detailed_file_handler)
+        logger.addHandler(last_file_handler)
         logger.addHandler(console_handler)
 
         return logger
@@ -120,3 +135,29 @@ def log_execution(logger: SafeLogger):
         return wrapper
 
     return decorator
+
+
+# Inicializa colorama para que se reinicien los colores automáticamente
+init(autoreset=True)
+
+
+# Formatter personalizado para consola con colores
+class ColorFormatter(logging.Formatter):
+    # Códigos ANSI para cada nivel:
+    COLORS = {
+        logging.DEBUG: "\033[90m",  # gris
+        logging.INFO: "\033[34m",  # azul
+        logging.WARNING: "\033[38;5;208m",  # naranja (si terminal soporta)
+        logging.ERROR: "\033[31m",  # rojo
+        logging.CRITICAL: "\033[31m",  # rojo
+    }
+    RESET = "\033[0m"
+
+    def format(self, record: logging.LogRecord) -> str:
+        # Aplica color al nombre del nivel
+        color = self.COLORS.get(record.levelno, "")
+        timestamp = self.formatTime(record, self.datefmt)
+        levelname = f"{color}{record.levelname}{self.RESET}"
+        # Formato compacto: LEVEL (timestamp): mensaje
+        formatted = f"{levelname} ({timestamp}): {record.getMessage()}"
+        return formatted

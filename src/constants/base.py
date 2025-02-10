@@ -38,6 +38,7 @@ NEQ_SYM: str = "≠"
 BITS: tuple[int, int] = (0, 1)
 ACTIVOS, INACTIVOS = True, False
 
+LOGS_PATH: str = ".logs"
 SAMPLES_PATH: str = "src/.samples/"
 PROFILING_PATH: str = "review/profiling"
 RESOLVER_PATH: str = "review/resolver"

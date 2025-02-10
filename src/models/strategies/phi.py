@@ -1,24 +1,25 @@
 import time
 import numpy as np
-from src.funcs.base import ABECEDARY, lil_endian, setup_logger
+from src.funcs.base import ABECEDARY, lil_endian
 from src.funcs.format import fmt_biparticion
-from src.middlewares.observer import DebugObserver
 from src.controllers.manager import Manager
-from src.models.base.sia import SIA
 
 import math
 
 import pyphi
-from pyphi.labels import NodeLabels
 from pyphi import Network, Subsystem
+from pyphi.labels import NodeLabels
 from pyphi.models.cuts import Bipartition, Part
 
+from src.middlewares.slogger import SafeLogger
+from src.middlewares.observer import DebugObserver
 from src.middlewares.profile import profile, profiler_manager
-from src.models.core.solution import Solution
 
+from src.models.base.sia import SIA
+from src.models.core.solution import Solution
+from src.models.enums.distance import MetricDistance
 from src.models.base.application import aplicacion
 
-from src.models.enums.distance import MetricDistance
 from src.constants.base import (
     DUMMY_ARR,
     DUMMY_PARTITION,
@@ -34,7 +35,7 @@ class Phi(SIA):
         profiler_manager.start_session(
             f"NET{len(config.estado_inicial)}{config.pagina}"
         )
-        self.logger = setup_logger("bruteforce_analysis")
+        self.logger = SafeLogger("bruteforce_analysis")
         self.debug_observer = DebugObserver()
 
     @profile(context={"type": "pyphi_analysis"})

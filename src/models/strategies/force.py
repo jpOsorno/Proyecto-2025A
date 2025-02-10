@@ -4,7 +4,7 @@ import pandas as pd
 import numpy as np
 from numpy.typing import NDArray
 
-from src.funcs.base import seleccionar_metrica, setup_logger, literales
+from src.funcs.base import seleccionar_metrica, literales
 from src.funcs.format import fmt_biparticion
 from src.funcs.system import (
     biparticiones,
@@ -17,6 +17,7 @@ from src.models.base.sia import SIA
 from src.models.core.system import System
 from src.models.core.solution import Solution
 
+from src.middlewares.slogger import SafeLogger
 from src.middlewares.profile import profile, profiler_manager
 from src.middlewares.observer import DebugObserver
 
@@ -54,7 +55,7 @@ class BruteForce(SIA):
         self.distancia_metrica: Callable = seleccionar_metrica(
             aplicacion.distancia_metrica
         )
-        self.logger = setup_logger("bruteforce_analysis")
+        self.logger = SafeLogger("bruteforce_analysis")
 
     # @profile(context={"type": "bruteforce_analysis"}) # Descomentame y revisa el directorio `review/profiling/`! #
     def aplicar_estrategia(self, condiciones: str, alcance: str, mecanismo: str):

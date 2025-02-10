@@ -252,7 +252,7 @@ class Solution:
 {Fore.GREEN}φ = {self.perdida:.4f}
 
 {Fore.BLUE}Tiempos de ejecución:
-{Fore.MAGENTA}Segundos: {self.tiempo_ejecucion:.4f}, Minutos: {self.tiempo_ejecucion/60:.1f}, Horas: {self.tiempo_ejecucion/3600:.2f}
+{Fore.WHITE}Horas: {self.tiempo_ejecucion/3600:.2f}, Minutos: {self.tiempo_ejecucion/60:.1f}, Segundos: {self.tiempo_ejecucion:.4f}
 
 {Fore.CYAN}{trilinea}{Style.RESET_ALL}"""
 

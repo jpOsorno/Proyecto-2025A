@@ -1,6 +1,7 @@
 import time
 import numpy as np
-from src.funcs.base import emd_efecto, ABECEDARY, setup_logger
+from src.middlewares.slogger import SafeLogger
+from src.funcs.base import emd_efecto, ABECEDARY
 from src.middlewares.profile import profiler_manager, profile
 from src.funcs.format import fmt_biparte_q
 from src.controllers.manager import Manager
@@ -104,7 +105,7 @@ class QNodes(SIA):
         self.indices_alcance: np.ndarray
         self.indices_mecanismo: np.ndarray
 
-        self.logger = setup_logger("q_strat")
+        self.logger = SafeLogger("q_strat")
 
     # @profile(context={"type": "q_analysis"})
     def aplicar_estrategia(self, conditions, purview, mechansim):
