@@ -10,41 +10,63 @@ from src.testing.funcs import cargar_resultados_existentes, guardar_resultados
 
 
 def iniciar():
-    """Punto de entrada principal"""
-    red_usada = RED_15
-    muestras: list[list[tuple[str, str]]] = red_usada[PRUEBAS]
-    num_nodos: int = red_usada[NUM_NODOS]
 
-    estado_inicio = f"1{'0' * (num_nodos - 1)}"
-    condiciones = "1" * num_nodos
+    """Punto de entrada principal"""
+    # ABCD #
+    estado_inicio = "100000000000000"
+    condiciones =   "111111111111111"
+    alcance =       "111111111111111"
+    mecanismo =     "110110110110110"
+    # estado_inicio = "10000"
+    # condiciones =   "11111"
+    # alcance =       "11111"
+    # mecanismo =     "11011"
 
     config_sistema = Manager(estado_inicial=estado_inicio)
-    soluciones = cargar_resultados_existentes()  # Cargar resultados previos
 
-    logger = setup_logger("q_strat")
-    for lote in muestras:
-        for prueba in lote:
-            if prueba in soluciones:
-                continue  # Si ya está guardado, lo saltamos
+    ### Ejemplo de solución mediante módulo de fuerza bruta ###
+    analizador_fb = QNodes(config_sistema)
+    sia_uno = analizador_fb.aplicar_estrategia(condiciones, alcance, mecanismo)
+    print(sia_uno)
 
-            alcance, mecanismo = prueba
-            analizador_q = Phi(config_sistema)
 
-            inicio_tiempo = time.time()
-            solucion = analizador_q.aplicar_estrategia(condiciones, alcance, mecanismo)
-            tiempo_ejecucion = time.time() - inicio_tiempo
+# def iniciar():
+#     """Punto de entrada principal"""
+#     red_usada = RED_15
+#     muestras: list[list[tuple[str, str]]] = red_usada[PRUEBAS]
+#     num_nodos: int = red_usada[NUM_NODOS]
 
-            soluciones[prueba] = (
-                solucion.perdida,
-                tiempo_ejecucion,
-            )  # Guardar en memoria
+#     estado_inicio = f"1{'0' * (num_nodos - 1)}"
+#     condiciones = "1" * num_nodos
 
-            # Guardar inmediatamente para minimizar pérdida en caso de crash
-            guardar_resultados(soluciones)
-        # break  # Eliminarlo cuando estés listo para ejecutar todo
+#     config_sistema = Manager(estado_inicial=estado_inicio)
+#     soluciones = cargar_resultados_existentes()  # Cargar resultados previos
 
-    logger.debug(f"{soluciones=}")
+#     logger = setup_logger("q_strat")
+#     for lote in muestras:
+#         for prueba in lote:
+#             if prueba in soluciones:
+#                 continue  # Si ya está guardado, lo saltamos
 
+#             alcance, mecanismo = prueba
+#             analizador_q = Phi(config_sistema)
+
+#             inicio_tiempo = time.time()
+#             solucion = analizador_q.aplicar_estrategia(condiciones, alcance, mecanismo)
+#             tiempo_ejecucion = time.time() - inicio_tiempo
+
+#             soluciones[prueba] = (
+#                 solucion.perdida,
+#                 tiempo_ejecucion,
+#             )  # Guardar en memoria
+
+#             # Guardar inmediatamente para minimizar pérdida en caso de crash
+#             guardar_resultados(soluciones)
+#         # break  # Eliminarlo cuando estés listo para ejecutar todo
+
+#     logger.debug(f"{soluciones=}")
+
+""""""
 
 # condicion, alcance, mecanismo = ("1111", "1110", "1110")  # index out or range
 # condicion, alcance, mecanismo = ("1110", "1110", "1110")  # void|void

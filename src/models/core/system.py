@@ -261,9 +261,15 @@ class System:
 
         for i, ncubo in enumerate(self.ncubos):
             probabilidad = ncubo.data
+
             if ncubo.dims.size:
+                print(f"){ncubo.dims=}")
+
                 sub_estado_inicial = tuple(self.estado_inicial[j] for j in ncubo.dims)
-                probabilidad = ncubo.data[seleccionar_subestado(sub_estado_inicial)]
+                probabilidad = ncubo.data[sub_estado_inicial[::-1]]
+                if np.isnan(probabilidad):
+                    print(f"{i=},{ncubo.data=}")
+                    raise ValueError("NANs unallowed")
             distribuciones[i] = 1 - probabilidad
         return distribuciones
 

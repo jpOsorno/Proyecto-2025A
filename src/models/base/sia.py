@@ -76,6 +76,11 @@ class SIA(ABC):
 
         # Cargar y preparar datos
         tpm = self.sia_cargar_tpm()
+
+        # print([f"{cubo.data}" for cubo in self.ncubos if cubo.indice == 4])
+        # print([f"{col=}" for col in tpm])
+        # raise SystemExit
+
         estado_inicial = np.array(
             [canal for canal in self.sia_loader.estado_inicial], dtype=np.int8
         )

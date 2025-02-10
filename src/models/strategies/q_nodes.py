@@ -206,14 +206,19 @@ class QNodes(SIA):
 
             for j in range(len(deltas_ciclo) - 1):
                 emd_local = 1e5
-                indice_mip: int
+                indice_mip: int = None
                 for k in range(len(deltas_ciclo)):
-                    # print(f"{self.tiempos=}")
+                    print(f">>{k=}")
+
+                    print(deltas_ciclo[k])
 
                     emd_union, emd_delta, dist_marginal_delta = self.funcion_submodular(
                         deltas_ciclo[k], omegas_ciclo
                     )
                     emd_iteracion = emd_union - emd_delta
+
+                    print(f">{emd_local=}")
+                    print(f">{emd_iteracion=}")
 
                     if emd_iteracion < emd_local:
                         emd_local = emd_iteracion
@@ -222,6 +227,10 @@ class QNodes(SIA):
                     emd_particion_candidata = emd_delta
                     dist_particion_candidata = dist_marginal_delta
                     ...
+
+                print(f"{indice_mip=}")
+                print(f"{omegas_ciclo=}\n")
+                print(f"{deltas_ciclo=}\n")
 
                 omegas_ciclo.append(deltas_ciclo[indice_mip])
                 deltas_ciclo.pop(indice_mip)
@@ -306,8 +315,11 @@ class QNodes(SIA):
                 temporal[d_tiempo].append(o_indice)
 
         if tuple(deltas) in self.memoria_delta:
+            print("!memo!")
+
             emd_delta, vector_delta_marginal = self.memoria_delta[tuple(deltas)]
         else:
+            print("!news!")
             copia_delta = self.sia_subsistema
 
             dims_alcance_delta = temporal[EFECTO]
@@ -321,6 +333,8 @@ class QNodes(SIA):
             emd_delta = emd_efecto(vector_delta_marginal, self.sia_dists_marginales)
 
             self.memoria_delta[tuple(deltas)] = emd_delta, vector_delta_marginal
+
+        print(f"delta: {vector_delta_marginal, =}")
 
         # Unión #
 
@@ -343,7 +357,14 @@ class QNodes(SIA):
             np.array(dims_mecanismo_union, dtype=np.int8),
         )
         vector_union_marginal = particion_union.distribucion_marginal()
+
+        print(f"union: {vector_union_marginal=}")
+
         emd_union = emd_efecto(vector_union_marginal, self.sia_dists_marginales)
+
+        print(f"{emd_union, emd_delta=}")
+
+        print(f"{self.sia_dists_marginales=}")
 
         return emd_union, emd_delta, vector_delta_marginal
 
