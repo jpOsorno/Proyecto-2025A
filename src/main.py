@@ -4,7 +4,7 @@ from src.models.strategies.force import BruteForce
 
 def iniciar():
     """Punto de entrada principal"""
-    # ABCD #
+                   # ABCD #
     estado_inicio = "1000"
     condiciones =   "1110"
     alcance =       "1110"

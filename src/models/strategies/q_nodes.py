@@ -207,7 +207,6 @@ class QNodes(SIA):
                 emd_local = 1e5
                 indice_mip: int
                 for k in range(len(deltas_ciclo)):
-                    # print(f"{self.tiempos=}")
 
                     emd_union, emd_delta, dist_marginal_delta = self.funcion_submodular(
                         deltas_ciclo[k], omegas_ciclo
