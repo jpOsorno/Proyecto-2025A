@@ -233,6 +233,11 @@ class Solution:
             voz = Thread(target=self.__anunciar_solucion)
             voz.start()
 
+        tiempo_h, tiempo_m, tiempo_s = (
+            f"{self.tiempo_ejecucion/3600:.2f}",
+            f"{self.tiempo_ejecucion/60:.1f}",
+            f"{self.tiempo_ejecucion:.4f}",
+        )
         return f"""{Fore.CYAN}{bilinea}
 
 {Fore.RED}{self.estrategia} fue la estrategia de solucion.
@@ -252,7 +257,7 @@ class Solution:
 {Fore.GREEN}φ = {self.perdida:.4f}
 
 {Fore.BLUE}Tiempos de ejecución:
-{Fore.WHITE}Horas: {self.tiempo_ejecucion/3600:.2f}, Minutos: {self.tiempo_ejecucion/60:.1f}, Segundos: {self.tiempo_ejecucion:.4f}
+{Fore.WHITE}Horas: {tiempo_h}, Minutos: {tiempo_m}, Segundos: {tiempo_s}
 
 {Fore.CYAN}{trilinea}{Style.RESET_ALL}"""
 
