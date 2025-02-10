@@ -233,6 +233,9 @@ class Solution:
             voz = Thread(target=self.__anunciar_solucion)
             voz.start()
 
+        es_pyphi = self.estrategia == "Pyphi"
+        tipo_distribucion = "" if es_pyphi else "marginal"
+
         tiempo_h, tiempo_m, tiempo_s = (
             f"{self.tiempo_ejecucion/3600:.2f}",
             f"{self.tiempo_ejecucion/60:.1f}",
@@ -247,9 +250,9 @@ class Solution:
 {Fore.BLUE}Notación utilizada en indexación:
 {Style.RESET_ALL}{aplicacion.notacion}
 
-{Fore.YELLOW}Distribución del Subsistema:
+{Fore.YELLOW}Distribucion {tipo_distribucion} del Subsistema:
 {Style.RESET_ALL}{formatear_distribucion(self.distribucion_subsistema)}
-{Fore.YELLOW}Distribución de la Partición:
+{Fore.YELLOW}Distribucion {tipo_distribucion} de la Partición:
 {Style.RESET_ALL}{formatear_distribucion(self.distribucion_particion)}
 
 {Fore.YELLOW}Mejor Bi-Partición:
