@@ -1,4 +1,5 @@
 import time
+from typing import Union
 import numpy as np
 from src.middlewares.slogger import SafeLogger
 from src.funcs.base import emd_efecto, ABECEDARY
@@ -257,7 +258,7 @@ class QNodes(SIA):
         )
 
     def funcion_submodular(
-        self, deltas: tuple | list[tuple], omegas: list[tuple | list[tuple]]
+        self, deltas: Union[tuple, list[tuple]], omegas: list[Union[tuple, list[tuple]]]
     ):
         """
         Evalúa el impacto de combinar el conjunto de nodos individual delta y su agrupación con el conjunto omega, calculando la diferencia entre EMD (Earth Mover's Distance) de las configuraciones, en conclusión los nodos delta evaluados individualmente y su combinación con el conjunto omega.
