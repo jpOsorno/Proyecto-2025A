@@ -1,5 +1,5 @@
-from src.controllers.strategies.force import BruteForce
 from src.controllers.manager import Manager
+from src.controllers.strategies.force import BruteForce
 
 
 def iniciar():
