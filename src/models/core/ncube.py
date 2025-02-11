@@ -138,8 +138,7 @@ class NCube:
             dtype=np.int8,
         )
         return NCube(
-            data=np.sum(self.data, axis=local_axes, keepdims=False)
-            / (1 << marginable_axis.size),
+            data=np.mean(self.data, axis=local_axes, keepdims=False),
             dims=new_dims,
             indice=self.indice,
         )
