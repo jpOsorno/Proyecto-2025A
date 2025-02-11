@@ -1,4 +1,3 @@
-import time
 from colorama import init, Fore, Style
 import pyttsx3
 from pyttsx3.engine import Engine
