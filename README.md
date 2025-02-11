@@ -2,7 +2,14 @@
 
 Base del proyecto para dar desarrollo a estrategias más elaboradas.
 
-Para clonar el repositorio con github debemos tener GIT y aplicar el comando sobre un directorio cómodo para guardar el proyecto `git clone https://github.com/Complexum/Proyecto-2025A .` y poder comenzar con nuestra asombrosa aventura!
+Para el correcto uso del aplicativo se buscará lo siguiente:
+El alumnado se conformará por grupos de desarrollo, de forma que puedan tener el aplicativo base para desarrollar sus estrategias de forma independiente, con su información segura en una rama propia para el desarrollo. A su vez, podrán recibir actualizaciones del proyecto principal mediante `git pull` mientras sea necesario.
+
+Para lograr esto, primero vamos a realizar un **Fork** al repositorio, usando con un nombre de preferencia según el equipo de desarrollo. Procederemos a clonar este repositorio en nuestro ordenador mediante `git clone https://github.com/<usuario-grupo>/<Fork-Proyecto-2025A> .` usando GIT, tras esto podremos asociar este repo **local** del equipo con el original para recibir actualizaciones, lo logras mediante el comando `git remote add upstream https://github.com/Complexum/Proyecto-2025A.git` siendo así que mediante el comando `git pull` o `git fetch upstream` siempre que estés sobre la rama **`dev`** para hacer tu desarrollo recibirás actualizaciones ocurridas en main.
+
+De esta forma podrás desarrollar en colaborativo con tu equipo de desarrollo y aún así recibir actualizaciones del repositorio original, esto de forma 
+
+Para clonar el repositorio con github debemos tener GIT y aplicar el comando sobre un directorio cómodo para guardar el proyecto  y poder comenzar con nuestra asombrosa aventura!
 
 ---
 
