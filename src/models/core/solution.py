@@ -222,12 +222,26 @@ class Solution:
         bilinea = "═" * 50
         trilinea = "≡" * 50
 
-        def formatear_distribucion(dist: np.ndarray):
+        def formatear_distribucion(
+            distribucion: np.ndarray,
+            evitar_desbordamiento=True,
+        ):
+            rango = distribucion.size
+            mensaje_desborde = ""
+            if evitar_desbordamiento:
+                LIMITE = 40
+                excedente = rango - LIMITE
+                if excedente > 0:
+                    mensaje_desborde = f" {excedente} valores más.."
+                    rango = LIMITE
+
             datos = " ".join(
-                f"{Fore.WHITE}{x:.4f}" if x > 0 else f"{Fore.LIGHTBLACK_EX}0."
-                for x in dist
+                f"{Fore.WHITE}{distribucion[idx]:.4f}"
+                if distribucion[idx] > 0
+                else f"{Fore.LIGHTBLACK_EX}0."
+                for idx in range(rango)
             )
-            return f"[ {datos} {Fore.WHITE}]"
+            return f"[ {datos}{mensaje_desborde} {Fore.WHITE}]"
 
         if self.hablar:
             voz = Thread(target=self.__anunciar_solucion)
