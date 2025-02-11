@@ -5,7 +5,6 @@ import numpy as np
 import numpy.typing as NDArray
 
 from src.middlewares.slogger import SafeLogger
-from src.middlewares.slogger import SafeLogger
 from src.controllers.manager import Manager
 from src.models.core.system import System
 
