@@ -229,7 +229,7 @@ class Solution:
             rango = distribucion.size
             mensaje_desborde = ""
             if evitar_desbordamiento:
-                LIMITE = 40
+                LIMITE = 64
                 excedente = rango - LIMITE
                 if excedente > 0:
                     mensaje_desborde = f" {excedente} valores más.."
