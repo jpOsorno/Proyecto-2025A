@@ -70,21 +70,21 @@ class Manager:
                 return None
 
         # Verificar archivos existentes y generar nuevo nombre
-        base_path = Path("src/.samples")
+        base_path = Path(SAMPLES_PATH)
         base_path.mkdir(parents=True, exist_ok=True)
 
         suffix = ABC_START
-        while (base_path / f"N{dimensiones}{suffix}.csv").exists():
+        while (base_path / f"N{dimensiones}{suffix}.{CSV_EXTENSION}").exists():
             if (
                 input(
-                    f"Ya existe N{dimensiones}{suffix}.csv. ¿Generar nueva red? (s/n): "
+                    f"Ya existe N{dimensiones}{suffix}.{CSV_EXTENSION}. ¿Generar nueva red? (s/n): "
                 ).lower()
                 != "s"
             ):
                 return f"N{dimensiones}{suffix}.{CSV_EXTENSION}"
             suffix = chr(ord(suffix) + 1)
 
-        filename = f"N{dimensiones}{suffix}.csv"
+        filename = f"N{dimensiones}{suffix}.{CSV_EXTENSION}"
         filepath = base_path / filename
 
         # Generar estados
