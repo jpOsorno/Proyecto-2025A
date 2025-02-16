@@ -21,7 +21,7 @@ El sistema implementa el patrón Strategy a través de la clase abstracta `SIA` 
 - `Phi`: Librería oficial, cuál utiliza algoritmos optimizados para el cálculo de φ _(small phi)_
 - `QNodes`: Implementa una estrategia basada en teoría de submodularidad
 
-Cada estrategia hereda de `SIA` _(Sistem Irreducibility Analysis)_ y debe implementar el método `aplicar_estrategia()`, permitiendo diferentes aproximaciones al problema usando el patrón [Strategy](https://refactoring.guru/es/design-patterns/strategy).
+Cada estrategia hereda de `SIA` _(System Irreducibility Analysis)_ y debe implementar el método `aplicar_estrategia()`, permitiendo diferentes aproximaciones al problema usando el patrón [Strategy](https://refactoring.guru/es/design-patterns/strategy).
 
 ### 3. Núcleo de Procesamiento
 
@@ -81,7 +81,6 @@ classDiagram
     class SIA{
         <<Abstract>>
         #Manager sia_loader
-        #DebugObserver sia_debug_observer
         #Logger sia_logger
         #System sia_subsistema
         #NDArray sia_dists_marginales
@@ -122,7 +121,6 @@ classDiagram
     class System{
         +NDArray estado_inicial
         +tuple ncubos
-        +SystemObserver observer
         +NDArray indices_ncubos
         +NDArray dims_ncubos
         +condicionar(indices: NDArray) System
@@ -173,12 +171,6 @@ classDiagram
         +set_estados_inactivos()
     }
 
-    class SystemObserver{
-        <<Interface>>
-        +on_condition()
-        +on_marginalize()
-        +on_partition()
-    }
 
     %% Solución
     class Solution{
@@ -198,7 +190,6 @@ classDiagram
     SIA <|-- QNodes
     Manager <-- SIA: Configuración
     System o-- NCube: Contiene
-    System --> SystemObserver: Notifica
     BruteForce --> System: Usa
     BruteForce --> Solution: Genera
     ProfilerContext --> ProfilingManager: Usa
@@ -215,6 +206,5 @@ classDiagram
 El sistema intentó implementar varios patrones de diseño clásicos para practicar, mejorar la experiencia de usuario y darlos a conocer:
 1. Strategy (implementaciones de SIA)
 2. Singleton (sobre Application)
-3. Observer (monitoreo del sistema)
 4. Context (sistema de profiling)
 5. Immutable Object (para NCube)

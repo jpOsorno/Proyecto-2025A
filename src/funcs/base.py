@@ -10,7 +10,7 @@ from pyemd import emd
 from src.models.enums.distance import MetricDistance
 from src.models.enums.notation import Notation
 
-from models.base.application import aplicacion
+from src.models.base.application import aplicacion
 from src.constants.base import ABC_START, INT_ZERO
 
 
@@ -219,49 +219,3 @@ def estados_binarios(n: int):
 #     # Números de 0 a 2^N #
 #     rango = [dec2bin(i, n) for i in range(2**n)]
 #     return product(rango, repeat=veces)
-
-
-def setup_logger(name: str) -> logging.Logger:
-    """
-    Configura un logger con formato detallado y salida a archivo.
-
-    Args:
-        name: Nombre base para el archivo de log
-
-    Returns:
-        Logger configurado
-    """
-    # Crear directorio base logs si no existe
-    base_log_dir = Path("logs")
-    base_log_dir.mkdir(exist_ok=True)
-
-    # Obtener fecha y hora actual
-    current_time = datetime.now()
-
-    # Crear subdirectorio con la fecha
-    date_dir = base_log_dir / current_time.strftime("%d_%m_%Y")
-    date_dir.mkdir(exist_ok=True)
-
-    # Crear subdirectorio con la hora
-    hour_dir = date_dir / f"{current_time.strftime('%H')}hrs"
-    hour_dir.mkdir(exist_ok=True)
-
-    # Crear archivo de log
-    log_file = hour_dir / f"{name}.log"
-
-    # Configurar logger
-    logger = logging.getLogger(name)
-    logger.setLevel(logging.DEBUG)
-
-    # Handler para archivo
-    file_handler = logging.FileHandler(log_file, mode="w")
-    file_handler.setLevel(logging.DEBUG)
-
-    # Formato detallado
-    formatter = logging.Formatter(
-        "%(asctime)s - %(name)s - %(levelname)s\n%(message)s\n"
-    )
-    file_handler.setFormatter(formatter)
-    logger.addHandler(file_handler)
-
-    return logger

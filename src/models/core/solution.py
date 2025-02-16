@@ -6,7 +6,8 @@ import numpy as np
 from threading import Thread
 from typing import Optional
 
-from models.base.application import aplicacion
+from src.constants.base import FLOAT_ZERO
+from src.models.base.application import aplicacion
 
 # Iniciar colorama
 init()
@@ -99,6 +100,7 @@ class Solution:
         distribucion_subsistema: np.ndarray,
         distribucion_particion: np.ndarray,
         particion: str,
+        tiempo_total: float = FLOAT_ZERO,
         hablar: bool = True,
         voz: Optional[str] = None,
     ) -> None:
@@ -111,11 +113,9 @@ class Solution:
         self.distribucion_subsistema = distribucion_subsistema
         self.distribucion_particion = distribucion_particion
         self.particion = particion
+        self.tiempo_ejecucion = tiempo_total
         self.id_voz = voz
-
-        if hablar:
-            voz = Thread(target=self.__anunciar_solucion)
-            voz.start()
+        self.hablar = hablar
 
     def __obtener_voz_espanol(self, motor: Engine) -> Optional[str]:
         """
@@ -193,7 +193,7 @@ class Solution:
 
             mensaje = f"Solución encontrada con {self.estrategia}." + (
                 f"El valor de fi es de {self.perdida:.2f}"
-                if self.perdida > 0
+                if self.perdida > FLOAT_ZERO
                 else "No hubo pérdida."
             )
             motor.say(mensaje)
@@ -214,37 +214,66 @@ class Solution:
                 - Mejor partición encontrada en magenta
                 - Elementos decorativos en cyan
 
-        Note:
+        Notes:
         -----
             Utiliza la biblioteca colorama para el formato de colores, permitiedo una visualización clara por terminal.
         """
         bilinea = "═" * 50
         trilinea = "≡" * 50
 
-        def formatear_distribucion(dist: np.ndarray):
+        def formatear_distribucion(
+            distribucion: np.ndarray,
+            evitar_desbordamiento=True,
+        ):
+            rango = distribucion.size
+            mensaje_desborde = ""
+            if evitar_desbordamiento:
+                LIMITE = 64
+                excedente = rango - LIMITE
+                if excedente > 0:
+                    mensaje_desborde = f" {excedente} valores más.."
+                    rango = LIMITE
+
             datos = " ".join(
-                f"{Fore.LIGHTBLACK_EX}-" if x < 0 else f"{Fore.WHITE}{x:.4f}"
-                for x in dist
+                f"{Fore.WHITE}{distribucion[idx]:.4f}"
+                if distribucion[idx] > 0
+                else f"{Fore.LIGHTBLACK_EX}0."
+                for idx in range(rango)
             )
-            return f"[ {datos} ]"
+            return f"[ {datos}{mensaje_desborde} {Fore.WHITE}]"
 
-        return f"""{Fore.CYAN}{bilinea}{Style.RESET_ALL}
+        if self.hablar:
+            voz = Thread(target=self.__anunciar_solucion)
+            voz.start()
 
-{Fore.RED}{self.estrategia} fue la estrategia de solucion.{Style.RESET_ALL}
+        es_pyphi = self.estrategia == "Pyphi"
+        tipo_distribucion = "" if es_pyphi else "marginal"
 
-{Fore.BLUE}Distancia métrica utilizada:{Style.RESET_ALL}
-{aplicacion.distancia_metrica}
-{Fore.BLUE}Notación utilizada en indexación:{Style.RESET_ALL}
-{aplicacion.notacion}
+        tiempo_h, tiempo_m, tiempo_s = (
+            f"{self.tiempo_ejecucion/3600:.2f}",
+            f"{self.tiempo_ejecucion/60:.1f}",
+            f"{self.tiempo_ejecucion:.4f}",
+        )
+        return f"""{Fore.CYAN}{bilinea}
 
-{Fore.YELLOW}Distribución del Subsistema:{Style.RESET_ALL}
-{formatear_distribucion(self.distribucion_subsistema)}
-{Fore.YELLOW}Distribución de la Partición:{Style.RESET_ALL}
-{formatear_distribucion(self.distribucion_particion)}
+{Fore.RED}{self.estrategia} fue la estrategia de solucion.
 
-{Fore.YELLOW}Mejor Bi-Partición:{Style.RESET_ALL}
-{Fore.MAGENTA}{self.particion}{Style.RESET_ALL}
-{Fore.GREEN}φ = {self.perdida:.4f}{Style.RESET_ALL}
+{Fore.BLUE}Distancia métrica utilizada:
+{Fore.WHITE}{aplicacion.distancia_metrica}
+{Fore.BLUE}Notación utilizada en indexación:
+{Fore.WHITE}{aplicacion.notacion}
+
+{Fore.YELLOW}Distribucion {tipo_distribucion} del Subsistema:
+{Style.RESET_ALL}{formatear_distribucion(self.distribucion_subsistema)}
+{Fore.YELLOW}Distribucion {tipo_distribucion} de la Partición:
+{Style.RESET_ALL}{formatear_distribucion(self.distribucion_particion)}
+
+{Fore.YELLOW}Mejor Bi-Partición:
+{Fore.MAGENTA}{self.particion}
+{Fore.GREEN}Perdida mínima ( φ ) = {self.perdida:.4f}
+
+{Fore.BLUE}Tiempos de ejecución:
+{Fore.WHITE}Horas: {tiempo_h}, Minutos: {tiempo_m}, Segundos: {tiempo_s}
 
 {Fore.CYAN}{trilinea}{Style.RESET_ALL}"""
 

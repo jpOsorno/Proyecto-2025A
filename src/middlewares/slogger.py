@@ -5,6 +5,40 @@ from datetime import datetime
 from functools import wraps
 from typing import Any, Callable
 
+from colorama import init, Fore, Style
+
+from src.constants.base import LOGS_PATH
+
+
+class ColorFormatter(logging.Formatter):
+    """Formatter personalizado para consola con colores usando colorama."""
+
+    COLORS = {
+        logging.DEBUG: Fore.LIGHTBLACK_EX,  # gris
+        logging.INFO: Fore.BLUE,  # azul
+        logging.WARNING: Fore.YELLOW,  # amarillo
+        logging.ERROR: Fore.RED,  # rojo
+        logging.CRITICAL: Fore.MAGENTA,  # magenta
+        logging.FATAL: Fore.RED + Style.BRIGHT,  # rojo brillante
+    }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        init(autoreset=True)  # Inicializa colorama
+
+    def format(self, record: logging.LogRecord) -> str:
+        color = self.COLORS.get(record.levelno, "")
+        # Guarda el nombre del nivel original
+        original_levelname = record.levelname
+        # Aplica el color al nombre del nivel
+        record.levelname = f"{color}{original_levelname}{Style.RESET_ALL}"
+
+        # Formato del mensaje
+        formatted = super().format(record)
+        # Restaura el nombre del nivel original
+        record.levelname = original_levelname
+        return formatted
+
 
 class SafeLogger:
     """Logger seguro/robusto para manejar cualquier tipo de entrada y caracteres especiales."""
@@ -23,19 +57,16 @@ class SafeLogger:
 
     def _safe_format(self, *args, **kwargs) -> str:
         """Formatea los argumentos de forma segura."""
-        # Maneja args
         args_str = " ".join(self._safe_str(arg) for arg in args)
-
-        # Maneja kwargs
         if kwargs:
             kwargs_str = " ".join(f"{k}={self._safe_str(v)}" for k, v in kwargs.items())
             return f"{args_str} {kwargs_str}"
         return args_str
 
     def __setup_logger(self, name: str) -> logging.Logger:
-        """Configura el logger con manejo de encodings."""
-        # Crear estructura de directorios
-        base_log_dir = Path("logs")
+        """Configura el logger con manejo de encodings y formateo personalizado."""
+        # Crear estructura de directorios para logs detallados
+        base_log_dir = Path(LOGS_PATH)
         base_log_dir.mkdir(exist_ok=True)
 
         current_time = datetime.now()
@@ -45,57 +76,84 @@ class SafeLogger:
         hour_dir = date_dir / f"{current_time.strftime('%H')}hrs"
         hour_dir.mkdir(exist_ok=True)
 
-        log_file = hour_dir / f"{name}.log"
+        # Archivo para logs detallados
+        detailed_log_file = hour_dir / f"{name}.log"
+        # Archivo para el último log
+        last_log_file = base_log_dir / f"last_{name}.log"
 
-        # Configurar logger
         logger = logging.getLogger(name)
-        logger.setLevel(logging.DEBUG)
+        logger.setLevel(logging.ERROR)
+        # Importante: evita la propagación a loggers padre
+        logger.propagate = False
+        logger.handlers.clear()
 
-        # Handler para archivo con encoding UTF-8
-        file_handler = logging.FileHandler(log_file, mode="w", encoding="utf-8")
-        file_handler.setLevel(logging.DEBUG)
+        # Formatter para archivos (sin colores)
+        plain_formatter = logging.Formatter(
+            "%(asctime)s [%(name)s] %(levelname)s %(processName)s: %(message)s",
+            datefmt="%Y-%m-%d %H:%M:%S",  # Removido %f para evitar el error
+        )
+
+        # Formatter para consola (con colores)
+        colored_formatter = ColorFormatter(
+            "%(levelname)s (%(asctime)s): %(message)s",
+            datefmt="%H:%M:%S",  # Formato simplificado para la consola
+        )
+
+        # Handler para archivo detallado
+        detailed_file_handler = logging.FileHandler(
+            detailed_log_file, mode="w", encoding="utf-8"
+        )
+        detailed_file_handler.setLevel(logging.DEBUG)
+        detailed_file_handler.setFormatter(plain_formatter)
+
+        # Handler para el archivo "last"
+        last_file_handler = logging.FileHandler(
+            last_log_file, mode="w", encoding="utf-8"
+        )
+        last_file_handler.setLevel(logging.DEBUG)
+        last_file_handler.setFormatter(plain_formatter)
 
         # Handler para consola
         console_handler = logging.StreamHandler(sys.stdout)
-        console_handler.setLevel(logging.INFO)
+        console_handler.setLevel(
+            logging.DEBUG
+        )  # Cambiado a DEBUG para ver todos los mensajes
+        console_handler.setFormatter(colored_formatter)
 
-        # Formato detallado
-        formatter = logging.Formatter(
-            "%(asctime)s - %(name)s - %(levelname)s\n%(message)s\n"
-        )
-
-        file_handler.setFormatter(formatter)
-        console_handler.setFormatter(formatter)
-
-        logger.addHandler(file_handler)
+        logger.addHandler(detailed_file_handler)
+        logger.addHandler(last_file_handler)
         logger.addHandler(console_handler)
 
         return logger
 
-    def log(self, level: int, *args, **kwargs) -> None:
+    def set_log(self, level: int, *args, **kwargs) -> None:
         """Método genérico de logging."""
         message = self._safe_format(*args, **kwargs)
         self._logger.log(level, message)
 
     def debug(self, *args, **kwargs) -> None:
         """Log a nivel DEBUG."""
-        self.log(logging.DEBUG, *args, **kwargs)
+        self.set_log(logging.DEBUG, *args, **kwargs)
 
     def info(self, *args, **kwargs) -> None:
         """Log a nivel INFO."""
-        self.log(logging.INFO, *args, **kwargs)
+        self.set_log(logging.INFO, *args, **kwargs)
 
     def warn(self, *args, **kwargs) -> None:
         """Log a nivel WARNING."""
-        self.log(logging.WARNING, *args, **kwargs)
+        self.set_log(logging.WARNING, *args, **kwargs)
 
     def error(self, *args, **kwargs) -> None:
         """Log a nivel ERROR."""
-        self.log(logging.ERROR, *args, **kwargs)
+        self.set_log(logging.ERROR, *args, **kwargs)
 
     def critic(self, *args, **kwargs) -> None:
         """Log a nivel CRITICAL."""
-        self.log(logging.CRITICAL, *args, **kwargs)
+        self.set_log(logging.CRITICAL, *args, **kwargs)
+
+    def fatal(self, *args, **kwargs) -> None:
+        """Log a nivel FATAL."""
+        self.set_log(logging.FATAL, *args, **kwargs)
 
 
 def get_logger(name: str) -> SafeLogger:

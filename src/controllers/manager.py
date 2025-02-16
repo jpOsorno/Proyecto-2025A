@@ -5,7 +5,7 @@ import os
 
 import numpy as np
 
-from models.base.application import aplicacion
+from src.models.base.application import aplicacion
 from src.constants.base import (
     ABC_START,
     CSV_EXTENSION,
@@ -30,9 +30,11 @@ class Manager:
     """
 
     estado_inicial: str
-    pagina: str = aplicacion.pagina_sample_network
     ruta_base: Path = Path(SAMPLES_PATH)
-    
+
+    @property
+    def pagina(self) -> str:
+        return aplicacion.pagina_sample_network
 
     @property
     def tpm_filename(self) -> Path:
@@ -47,8 +49,8 @@ class Manager:
         )
 
     def generar_red(self, dimensiones: int, datos_discretos: bool = True) -> str:
-        np.random.seed(aplicacion.semilla_numpy) 
-        
+        np.random.seed(aplicacion.semilla_numpy)
+
         if dimensiones < 1:
             raise ValueError("Las dimensiones deben ser positivas")
 

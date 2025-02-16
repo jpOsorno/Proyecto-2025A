@@ -190,3 +190,10 @@ review/*
 # pyphi
 __pyphi_cache__
 __pyphi_cache__/**
+
+# Pruebas
+# src/tests/**
+src\tests\**
+\src\tests\**
+src\tests\redes.py
+src/testing/

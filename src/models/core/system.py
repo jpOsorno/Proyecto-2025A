@@ -2,11 +2,10 @@ import numpy as np
 from numpy.typing import NDArray
 
 from src.funcs.base import reindexar, seleccionar_subestado
-from src.middlewares.observer import SystemObserver
 from src.models.enums.notation import Notation
 from src.models.core.ncube import NCube
 
-from models.base.application import aplicacion
+from src.models.base.application import aplicacion
 
 from src.constants.base import COLS_IDX
 
@@ -19,7 +18,6 @@ class System:
     ----
         - `tpm` (np.ndarray): El la Matriz de Probabilidad de Transición, de la cuál por cada nodo se generará un n-cubo asociado para permitir rápida operación de los datos.
         - `estado_inicial` (np.ndarray): Este asocia cada variable del sistema con un estado, activa o inactiva, de forma que permita al final seleccionar ciertos estados necesarios para el cálculo final de la EMD.
-        - `my_observer` Optional(SystemObserver): Clase observer para depurar sobre una ejecución.
         - `notation` Optional(str): Por defecto Little-Endian. Representa la notación usada para la indexación de los datos, leer la guía del proyecto para conocer más notaciones.
     """
 
@@ -28,9 +26,7 @@ class System:
         tpm: np.ndarray,
         estado_inicio: np.ndarray,
         notacion: str = aplicacion.notacion,
-        observer: SystemObserver = None,
     ):
-        self.observer = observer
         if estado_inicio.size != (n_nodes := tpm.shape[COLS_IDX]):
             raise ValueError(f"Estado inicial debe tener longitud {n_nodes}")
         self.estado_inicial = estado_inicio
@@ -148,7 +144,7 @@ class System:
         self,
         alcance_dims: NDArray[np.int8],
         mecanismo_dims: NDArray[np.int8],
-    ) -> "System":
+    ):
         """
         Permite substraer una serie de elementos a partir de un sistema completo o sun sisteam candidato tanto en el futuro/alcance como el presente/mecanismo, logrando así la generación de un subsistema.
 
