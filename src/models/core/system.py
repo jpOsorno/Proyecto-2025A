@@ -267,7 +267,7 @@ class System:
         sub_dims = self.dims_ncubos
         cubes_info = [f"{c}" for c in self.ncubos]
         return (
-            f"\nSystem(indices={self.indices_ncubos}, sub_dims={sub_dims})"
+            f"\nSystem(indices={self.indices_ncubos}, dims={sub_dims})"
             f"\nInitial state: {self.estado_inicial}"
             f"\nNCubes:\n" + "\n".join(cubes_info)
         )
