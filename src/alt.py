@@ -39,7 +39,7 @@ def iniciar():
             # if reactor.obtener_resultado(*prueba):
             #     continue
 
-            logger.error(f"\n{prueba=}")
+            logger.debug(f"\n{prueba=}")
             alcance, mecanismo = prueba
             analizador_q = QNodes(config_sistema)
 
@@ -56,13 +56,12 @@ def iniciar():
             #     perdida=solucion.perdida,
             #     tiempo=solucion.tiempo_ejecucion,
             # )
-            logger.critic(
+            logger.error(
                 alcance,
                 mecanismo,
                 solucion.perdida,
                 solucion.tiempo_ejecucion,
             )
-            print(solucion)
             break
         break
 
