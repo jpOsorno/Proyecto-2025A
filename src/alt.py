@@ -56,7 +56,7 @@ def iniciar():
             #     perdida=solucion.perdida,
             #     tiempo=solucion.tiempo_ejecucion,
             # )
-            logger.error(
+            logger.critic(
                 alcance,
                 mecanismo,
                 solucion.perdida,
