@@ -93,15 +93,15 @@ class SIA(ABC):
 
         # Formación de datos con logs opcionales de ejemplificación
         completo = System(tpm, estado_inicial)
-        self.sia_logger.critic("Original creado.")
-        self.sia_logger.info(completo)
-        self.sia_logger.critic("Original:")
-        self.sia_logger.info(completo)
+        # self.sia_logger.critic("Original creado.")
+        # self.sia_logger.info(completo)
+        # self.sia_logger.critic("Original:")
+        # self.sia_logger.info(completo)
 
         candidato = completo.condicionar(dims_condicionadas)
-        self.sia_logger.critic("Candidato creado.")
-        self.sia_logger.info(f"{dims_condicionadas}")
-        self.sia_logger.debug(candidato)
+        # self.sia_logger.critic("Candidato creado.")
+        # self.sia_logger.info(f"{dims_condicionadas}")
+        # self.sia_logger.debug(candidato)
 
         subsistema = candidato.substraer(dims_alcance, dims_mecanismo)
         self.sia_logger.critic("Subsistema creado.")
